@@ -14,7 +14,7 @@ class LoginEvents extends AuthEvent {
 
 extension LoginEventsExtension on LoginEvents {
   LoginRequest toLoginRequest() {
-    return LoginRequest(username, password);
+    return LoginRequest(username: username, password: password);
   }
 }
 
