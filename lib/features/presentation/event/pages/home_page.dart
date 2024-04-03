@@ -1,8 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ku_noti/core/constants/colors.dart';
-import 'package:ku_noti/features/presentation/event/widgets/search_bar.dart';
+import 'package:ku_noti/core/constants/constants.dart';
+import 'package:ku_noti/features/presentation/event/pages/search_page.dart';
+import 'package:ku_noti/features/presentation/event/widgets/select_chips.dart';
+import 'package:ku_noti/features/presentation/user/bloc/auth_bloc.dart';
+import 'package:ku_noti/features/presentation/user/bloc/auth_state.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -13,82 +16,103 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final List<String> chipLabels = ['All', 'Music', 'Art', 'Workshop'];
-  // State to keep track of the selected chip
   int selectedChipIndex = 0;
+
+  void navigationToSearchPage(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const SearchPage(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-      backgroundColor: Colors.white,
-      appBar: _buildAppBar(),
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            MySearchBarWidget(),
-            _buildFeaturedSection(),
-            _buildPopularSectionGridWrapper(context)
-          ],
-        ),
-      ),
-    );
-  }
-
-  PreferredSizeWidget _buildAppBar() {
-    return AppBar(
-      backgroundColor: Colors.transparent, // Assuming a transparent AppBar
-      elevation: 0, // No shadow
-      titleSpacing: 10, // Remove the default horizontal title padding
-      title: Row(
-        children: [
-          CircleAvatar(
-            radius: 30, // Adjust the radius for a larger image
-            backgroundImage: NetworkImage('https://www.shutterstock.com/image-vector/default-ui-image-placeholder-wireframes-600nw-1037719192.jpg'),
-          ),
-          SizedBox(width: 16), // Spacing between the avatar and the text
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center, // Align text to the center vertically
+    return  SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: _buildAppBar(context),
+        body: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                'Good Morning 👋', // Smaller text above the name
-                style: TextStyle(
-                  color: Colors.black, // Assuming a dark text color
-                  fontSize: 16, // Smaller font size for the greeting
-                ),
-              ),
-              Text(
-                'Andrew Ainsley', // Name in a larger text
-                style: TextStyle(
-                  color: Colors.black, // Assuming a dark text color
-                  fontSize: 24, // Larger font size for the name
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              _buildSearchBarButton(context),
+              _buildFeaturedSection(context),
+               const SizedBox(height: 16),
+              _buildPopularSectionGridWrapper(context)
             ],
           ),
-        ],
-      ),
-      actions: [
-        Row(
-          children: [
-            IconButton(
-              icon: Icon(
-                Icons.notifications, // Replace with your icon as per your design
-                color: Colors.black, // Assuming a dark icon color
-              ),
-              onPressed: () {
-                // Action for the button press
-              },
-            ),
-            SizedBox(width: 16)
-          ]
         ),
-      ],
+      ),
     );
   }
 
-  Widget _buildFeaturedSection() {
+  PreferredSizeWidget _buildAppBar(BuildContext context) {
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(kToolbarHeight),
+      child: BlocBuilder<AuthBloc, AuthState>(
+        builder: (context, state) {
+          String name = 'Guest';
+          String imagePath = kDefaultImage;
+
+          if (state is AuthDone && state.user != null) {
+            name = state.user!.name!;
+            imagePath = state.user!.imagePath!;
+          }
+
+          // Build the AppBar with user info
+          return AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            titleSpacing: 10,
+            title: Row(
+              children: [
+                CircleAvatar(
+                  radius: 30,
+                  backgroundImage: NetworkImage(imagePath),
+                ),
+                const SizedBox(width: 16),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Good Morning 👋',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                      ),
+                    ),
+                    Text(
+                      name,
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.notifications, color: Colors.black),
+                onPressed: () {
+                  // Action for the button press
+                },
+              ),
+              const SizedBox(width: 16),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+
+  Widget _buildFeaturedSection(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -97,13 +121,13 @@ class _HomePageState extends State<HomePage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
+              const Text(
                 'Featured',
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               ),
               TextButton(
                 onPressed: () {
-                  // Handle 'See All' tap
+                  navigationToSearchPage(context);
                 },
                 child: Text('See All',style: TextStyle(color: MyColors().primary),),
               ),
@@ -111,18 +135,18 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         SizedBox(
-          height: 350, // Adjust height to fit content
+          height: 350,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: 10, // Replace with your actual number of items
+            itemCount: 10,
             itemBuilder: (context, index) {
               return Container(
-                width: 300, // Adjust width to fit content
+                width: 300,
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Card(
                   clipBehavior: Clip.antiAlias,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(24), // Rounded corners
+                    borderRadius: BorderRadius.circular(24),
                   ),
                   child: Stack(
                     children: [
@@ -148,17 +172,17 @@ class _HomePageState extends State<HomePage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                'National Music Festival', // Replace with your event title
+                              const Text(
+                                'National Music Festival',
                                 style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),
                                 overflow: TextOverflow.ellipsis,
                               ),
-                              SizedBox(height: 4),
+                              const SizedBox(height: 4),
                               Text(
                                 'Mon, Dec 24 - 18:00 - 23:00 PM', // Replace with your event time
                                 style:  TextStyle(color: MyColors().primary,fontWeight: FontWeight.bold, fontSize: 14),
                               ),
-                              SizedBox(height: 4),
+                              const SizedBox(height: 4),
                               Row(
                                 children: [
                                   Icon(
@@ -167,11 +191,11 @@ class _HomePageState extends State<HomePage> {
                                     size: 16,
                                   ),
                                   const SizedBox(width: 4),
-                                  Text(
+                                  const Text(
                                     'Grand Park, New York', // Replace with your event location
                                     style: TextStyle(color: Colors.black, fontSize: 14),
                                   ),
-                                  SizedBox(width: 4),
+                                  const SizedBox(width: 4),
                                   Icon(
                                     Icons.favorite,
                                     color: MyColors().primary,
@@ -199,22 +223,31 @@ class _HomePageState extends State<HomePage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Popular Event 🔥', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-              TextButton(
-                onPressed: () {
-                  // Handle 'See All' tap
-                },
-                child: Text('See All', style: TextStyle(color: MyColors().primary),),
+              const Text('Popular Event 🔥', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+
+              GestureDetector(
+                onTap: () {},
+                child: Text('See All', style: TextStyle(color: MyColors().primary))
               ),
             ],
           ),
         ),
-        _buildSelectChips(),
-        Container(
+
+        SelectChips(
+            selectedChipIndex: selectedChipIndex,
+            onChipSelected: (String selectedLabel, int index) {
+              print(selectedLabel);
+              setState(() {
+                selectedChipIndex = index;
+              });
+            }
+        ),
+
+        SizedBox(
           height: MediaQuery.of(context).size.height * 0.6, // for example, 60% of the screen height
           child: _buildPopularSection(),
         ),
@@ -225,9 +258,8 @@ class _HomePageState extends State<HomePage> {
   Widget _buildPopularSection() {
     return GridView.builder(
       shrinkWrap: true,
-      // physics: NeverScrollableScrollPhysics(),
-      padding: EdgeInsets.all(16),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+      padding: const EdgeInsets.all(16),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         crossAxisSpacing: 16,
         mainAxisSpacing: 16,
@@ -249,23 +281,23 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.all(8),
+                padding: const EdgeInsets.all(8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       'Event Title', // Replace with your event title
                       style: TextStyle(fontWeight: FontWeight.bold),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
                       'Fri, Dec 20 - 13:00 - 15:00', // Replace with your event date and time
                       style: TextStyle(fontSize: 12, color: MyColors().primary),
                       overflow: TextOverflow.ellipsis,
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Row(
                       children: [
                         Icon(
@@ -273,15 +305,15 @@ class _HomePageState extends State<HomePage> {
                           color: MyColors().primary,
                           size: 16,
                         ),
-                        SizedBox(width: 4),
-                        Expanded(
+                        const SizedBox(width: 4),
+                        const Expanded(
                           child: Text(
                             'New Avenue, Washington', // Replace with your event location
                             style: TextStyle(fontSize: 12),
                             overflow: TextOverflow.ellipsis
                           ),
                         ),
-                        SizedBox(width: 4),
+                        const SizedBox(width: 4),
                         Icon(
                           Icons.favorite,
                           color: MyColors().primary,
@@ -343,4 +375,41 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
+  Widget _buildSearchBarButton(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        navigationToSearchPage(context);
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16.0),
+        margin: EdgeInsets.all(16.0),
+        height: 50,
+        decoration: BoxDecoration(
+          color: Colors.grey[100],
+          borderRadius: BorderRadius.circular(30.0),
+          border: Border.all(
+            color: Colors.grey.shade300,
+          ),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.search, color: Colors.grey),
+            SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                'What event are you looking for...',
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 16.0,
+                ),
+              ),
+            ),
+            Icon(Icons.tune, color: MyColors().primary),
+          ],
+        ),
+      ),
+    );
+  }
+
 }

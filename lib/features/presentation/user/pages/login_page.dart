@@ -41,6 +41,7 @@ class LoginPage extends StatelessWidget {
                 child: BlocListener<AuthBloc, AuthState>(
                   listener: (context, state) {
                     if (state is AuthDone) {
+                      print("user ${state.user}");
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
