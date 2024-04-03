@@ -30,7 +30,6 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return  SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.white,
         appBar: _buildAppBar(context),
         body: SingleChildScrollView(
           child: Column(
@@ -230,7 +229,9 @@ class _HomePageState extends State<HomePage> {
               const Text('Popular Event 🔥', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
 
               GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  navigationToSearchPage(context);
+                },
                 child: Text('See All', style: TextStyle(color: MyColors().primary))
               ),
             ],
@@ -331,59 +332,14 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildSelectChips() {
-    // Dummy data for the chips, replace with your actual data
-    // Default to the first chip being selected
-
-    return Container(
-      height: 50, // Adjust the height to fit your design
-      margin: EdgeInsets.symmetric(vertical: 10), // Vertical spacing for aesthetic
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: chipLabels.length,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8),
-            child: ChoiceChip(
-              label: Text(
-                chipLabels[index],
-                style: TextStyle(
-                  color: selectedChipIndex == index ? Colors.white : Colors.black,
-                ),
-              ),
-              backgroundColor: selectedChipIndex == index ? MyColors().primary : Colors.grey.shade200,
-              selectedColor: MyColors().primary, // The color when the chip is selected
-              selected: selectedChipIndex == index,
-              onSelected: (bool selected) {
-                // Set state or update the UI accordingly when a chip is selected
-                // You will need to use a StatefulWidget or another state management solution
-                setState(() {
-                  if (selected) {
-                    selectedChipIndex = index;
-                  }
-                });
-              },
-              shape: StadiumBorder(
-                side: BorderSide(
-                  color: selectedChipIndex == index ? MyColors().primary : Colors.transparent,
-                ),
-              ),
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8), // Inner padding for the chip
-            ),
-          );
-        },
-      ),
-    );
-  }
-
   Widget _buildSearchBarButton(BuildContext context) {
     return GestureDetector(
       onTap: () {
         navigationToSearchPage(context);
       },
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16.0),
-        margin: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        margin: const EdgeInsets.all(16.0),
         height: 50,
         decoration: BoxDecoration(
           color: Colors.grey[100],
@@ -394,9 +350,9 @@ class _HomePageState extends State<HomePage> {
         ),
         child: Row(
           children: [
-            Icon(Icons.search, color: Colors.grey),
-            SizedBox(width: 10),
-            Expanded(
+            const Icon(Icons.search, color: Colors.grey),
+            const SizedBox(width: 10),
+            const Expanded(
               child: Text(
                 'What event are you looking for...',
                 style: TextStyle(

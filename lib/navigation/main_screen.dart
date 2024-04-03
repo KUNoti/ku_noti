@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:ku_noti/features/presentation/event/pages/home_page.dart';
+import 'package:ku_noti/features/presentation/user/pages/user_setting_page.dart';
 import 'package:ku_noti/navigation/nav_bar.dart';
 import 'package:ku_noti/navigation/nav_model.dart';
 
@@ -38,11 +39,11 @@ class _MainScreenState extends State<MainScreen> {
       ),
       NavModel(
         page: const TabPage(tab: 4),
-        navKey: profileNavKey,
+        navKey: testNavKey,
       ),
       NavModel(
-        page: const TabPage(tab: 5),
-        navKey: testNavKey,
+        page: const UserSettingsPage(),
+        navKey: profileNavKey,
       ),
     ];
   }

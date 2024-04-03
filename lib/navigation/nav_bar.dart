@@ -47,8 +47,8 @@ class NavBar extends StatelessWidget {
             label: 'Favorites',
           ),
           BottomNavigationBarItem(
-            icon: Icon(pageIndex == 3 ? Icons.receipt_long : Icons.receipt_long_outlined),
-            label: 'Tickets',
+            icon: Icon(pageIndex == 3 ? Icons.event : Icons.event_outlined),
+            label: 'My Event',
           ),
           BottomNavigationBarItem(
             icon: Icon(pageIndex == 4 ? Icons.person : Icons.person_outline),
