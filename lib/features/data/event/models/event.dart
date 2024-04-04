@@ -4,6 +4,7 @@ import 'package:ku_noti/features/domain/event/entities/event.dart';
 
 class EventModel extends EventEntity {
   const EventModel({
+    super.id,
     super.title,
     super.latitude,
     super.longitude,
@@ -21,6 +22,7 @@ class EventModel extends EventEntity {
 
   factory EventModel.fromJson(Map<String, dynamic> map){
     return EventModel(
+        id: map['id'] ?? "",
         title: map['title'] ?? "",
         latitude: map['latitude'] ?? 13.5,
         longitude: map['longitude'] ?? 120.0,
@@ -55,6 +57,7 @@ class EventModel extends EventEntity {
 
   factory EventModel.fromEntity(EventEntity entity) {
     return EventModel(
+        id: entity.id,
         title: entity.title,
         latitude: entity.latitude,
         longitude: entity.longitude,

@@ -1,8 +1,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ku_noti/features/presentation/event/bloc/remote_event_bloc.dart';
-import 'package:ku_noti/features/presentation/event/bloc/remote_event_event.dart';
+import 'package:ku_noti/features/presentation/event/bloc/event/remote_event_bloc.dart';
+import 'package:ku_noti/features/presentation/event/bloc/event/remote_event_event.dart';
 
 import 'package:ku_noti/features/presentation/event/pages/home_page.dart';
 import 'package:ku_noti/features/presentation/user/pages/user_setting_page.dart';

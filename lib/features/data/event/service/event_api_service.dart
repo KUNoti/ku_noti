@@ -3,6 +3,7 @@
 import 'package:dio/dio.dart';
 import 'package:ku_noti/core/constants/constants.dart';
 import 'package:ku_noti/features/data/event/models/event.dart';
+import 'package:ku_noti/features/data/event/models/follow_event_request.dart';
 import 'package:retrofit/retrofit.dart';
 part 'event_api_service.g.dart';
 
@@ -30,13 +31,13 @@ abstract class EventApiService {
   //     @Part(name: "tag") String tag,
   //     );
 
-  // @POST('/api/event/follow')
-  // Future<HttpResponse<void>> followEvent(
-  //     @Body() FollowRequest request
-  //     );
-  //
-  // @DELETE('/api/event/unfollow')
-  // Future<HttpResponse<void>> unFollowEvent(
-  //     @Body() FollowRequest request
-  //     );
+  @POST('/api/event/follow')
+  Future<HttpResponse<void>> followEvent(
+    @Body() FollowRequest request
+  );
+
+  @DELETE('/api/event/unfollow')
+  Future<HttpResponse<void>> unFollowEvent(
+    @Body() FollowRequest request
+  );
 }

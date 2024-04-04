@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:equatable/equatable.dart';
 
 class EventEntity extends Equatable {
+  final int ? id;
   final String ? title;
   final num ? latitude;
   final num ? longitude;
@@ -19,6 +20,7 @@ class EventEntity extends Equatable {
   final bool ? needRegis;
 
   const EventEntity({
+    this.id,
     this.title,
     this.latitude,
     this.longitude,
@@ -37,6 +39,7 @@ class EventEntity extends Equatable {
   @override
   List<Object ?> get props {
     return [
+      id,
       title,
       latitude,
       longitude,

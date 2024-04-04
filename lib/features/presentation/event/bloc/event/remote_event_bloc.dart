@@ -3,8 +3,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ku_noti/core/resources/data_state.dart';
 import 'package:ku_noti/features/domain/event/usecases/get_events_usecase.dart';
-import 'package:ku_noti/features/presentation/event/bloc/remote_event_event.dart';
-import 'package:ku_noti/features/presentation/event/bloc/remote_event_state.dart';
+import 'package:ku_noti/features/presentation/event/bloc/event/remote_event_event.dart';
+import 'package:ku_noti/features/presentation/event/bloc/event/remote_event_state.dart';
+
 
 class RemoteEventsBloc extends Bloc<RemoteEventsEvent, RemoteEventsState> {
   final GetEventsUseCase _getEventUseCase;

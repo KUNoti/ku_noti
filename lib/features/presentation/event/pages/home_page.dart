@@ -1,13 +1,14 @@
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ku_noti/core/constants/colors.dart';
 import 'package:ku_noti/core/constants/constants.dart';
 import 'package:ku_noti/features/domain/event/entities/event.dart';
-import 'package:ku_noti/features/presentation/event/bloc/remote_event_bloc.dart';
-import 'package:ku_noti/features/presentation/event/bloc/remote_event_event.dart';
-import 'package:ku_noti/features/presentation/event/bloc/remote_event_state.dart';
+import 'package:ku_noti/features/presentation/event/bloc/event/remote_event_bloc.dart';
+import 'package:ku_noti/features/presentation/event/bloc/event/remote_event_event.dart';
+import 'package:ku_noti/features/presentation/event/bloc/event/remote_event_state.dart';
+import 'package:ku_noti/features/presentation/event/bloc/follow_event/follow_event_bloc.dart';
+import 'package:ku_noti/features/presentation/event/bloc/follow_event/follow_event_state.dart';
 import 'package:ku_noti/features/presentation/event/pages/search_page.dart';
 import 'package:ku_noti/features/presentation/event/widgets/event_big_card.dart';
 import 'package:ku_noti/features/presentation/event/widgets/event_popular_card.dart';
@@ -172,7 +173,20 @@ class _HomePageState extends State<HomePage> {
         itemCount: events?.length ?? 0,
         itemBuilder: (context, index) {
           final event = events![index];
-          return EventBigCard(event: event,);
+          return BlocListener<FollowEventBloc, FollowEventState>(
+            listener: (context, state) {
+              if (state is FollowEventSuccess) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Followed successfully!')),
+                );
+              } else if (state is FollowEventError) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(state.errorMessage ?? 'Error following')),
+                );
+              }
+            },
+            child: EventBigCard(event: event)
+          );
         }
       ),
     );
