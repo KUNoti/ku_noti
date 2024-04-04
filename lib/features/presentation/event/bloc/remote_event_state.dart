@@ -1,7 +1,7 @@
 
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
-import 'package:ku_noti/features/domain/event/entities/event_entity.dart';
+import 'package:ku_noti/features/domain/event/entities/event.dart';
 
 abstract class RemoteEventsState extends Equatable {
   final List<EventEntity> ? events;

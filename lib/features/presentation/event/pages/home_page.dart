@@ -1,21 +1,32 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ku_noti/core/constants/colors.dart';
 import 'package:ku_noti/core/constants/constants.dart';
+import 'package:ku_noti/features/domain/event/entities/event.dart';
+import 'package:ku_noti/features/presentation/event/bloc/remote_event_bloc.dart';
+import 'package:ku_noti/features/presentation/event/bloc/remote_event_event.dart';
+import 'package:ku_noti/features/presentation/event/bloc/remote_event_state.dart';
 import 'package:ku_noti/features/presentation/event/pages/search_page.dart';
+import 'package:ku_noti/features/presentation/event/widgets/event_big_card.dart';
+import 'package:ku_noti/features/presentation/event/widgets/event_popular_card.dart';
 import 'package:ku_noti/features/presentation/event/widgets/select_chips.dart';
 import 'package:ku_noti/features/presentation/user/bloc/auth_bloc.dart';
 import 'package:ku_noti/features/presentation/user/bloc/auth_state.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+
+  const HomePage({
+    super.key,
+
+  });
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  final List<String> chipLabels = ['All', 'Music', 'Art', 'Workshop'];
   int selectedChipIndex = 0;
 
   void navigationToSearchPage(BuildContext context) {
@@ -39,7 +50,7 @@ class _HomePageState extends State<HomePage> {
               _buildSearchBarButton(context),
               _buildFeaturedSection(context),
                const SizedBox(height: 16),
-              _buildPopularSectionGridWrapper(context)
+              _buildPopularSection(context)
             ],
           ),
         ),
@@ -110,114 +121,87 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-
   Widget _buildFeaturedSection(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'Featured',
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              ),
-              TextButton(
+    return BlocBuilder<RemoteEventsBloc, RemoteEventsState>(
+        builder: (context, state) {
+          if (state is RemoteEventsLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is RemoteEventsError) {
+            return Center(
+              child: IconButton(
+                icon: const Icon(Icons.refresh),
                 onPressed: () {
-                  navigationToSearchPage(context);
+                  context.read<RemoteEventsBloc>().add(const GetEvents());
                 },
-                child: Text('See All',style: TextStyle(color: MyColors().primary),),
               ),
-            ],
-          ),
-        ),
-        SizedBox(
-          height: 350,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: 10,
-            itemBuilder: (context, index) {
-              return Container(
-                width: 300,
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Card(
-                  clipBehavior: Clip.antiAlias,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                  child: Stack(
-                    children: [
-                      Image.network(
-                        'https://www.shutterstock.com/image-vector/default-ui-image-placeholder-wireframes-600nw-1037719192.jpg', // Replace with your image URLs
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                        height: double.infinity,
-                      ),
-                      Positioned(
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        child: Container(
-                          padding: const EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(1),
-                            borderRadius: const BorderRadius.only(
-                              bottomLeft: Radius.circular(15),
-                              bottomRight: Radius.circular(15),
-                            ),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'National Music Festival',
-                                style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                'Mon, Dec 24 - 18:00 - 23:00 PM', // Replace with your event time
-                                style:  TextStyle(color: MyColors().primary,fontWeight: FontWeight.bold, fontSize: 14),
-                              ),
-                              const SizedBox(height: 4),
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.location_on,
-                                    color: MyColors().primary,
-                                    size: 16,
-                                  ),
-                                  const SizedBox(width: 4),
-                                  const Text(
-                                    'Grand Park, New York', // Replace with your event location
-                                    style: TextStyle(color: Colors.black, fontSize: 14),
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Icon(
-                                    Icons.favorite,
-                                    color: MyColors().primary,
-                                    size: 16,
-                                  ),
-                                ]
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+            );
+          } else if (state is RemoteEventsDone) {
+            return Column(children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Featured',
+                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        navigationToSearchPage(context);
+                      },
+                      child: Text('See All',style: TextStyle(color: MyColors().primary),),
+                    ),
+                  ],
                 ),
-              );
-            },
-          ),
-        ),
-      ],
+              ),
+              _buildFeaturedEventList(context, state.events)
+            ]);
+          } else {
+            return const SizedBox();
+          }
+        }
     );
   }
 
-  Widget _buildPopularSectionGridWrapper(BuildContext context) {
+  Widget _buildFeaturedEventList(BuildContext context, List<EventEntity>? events) {
+    return SizedBox(
+      height: 350,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: events?.length ?? 0,
+        itemBuilder: (context, index) {
+          final event = events![index];
+          return EventBigCard(event: event,);
+        }
+      ),
+    );
+  }
+
+  Widget _buildPopularSection(BuildContext context) {
+    return BlocBuilder<RemoteEventsBloc, RemoteEventsState>(
+        builder: (context, state) {
+          if (state is RemoteEventsLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is RemoteEventsError) {
+            return Center(
+              child: IconButton(
+                icon: const Icon(Icons.refresh),
+                onPressed: () {
+                  context.read<RemoteEventsBloc>().add(const GetEvents());
+                },
+              ),
+            );
+          } else if (state is RemoteEventsDone) {
+            return _buildPopularSectionGridWrapper(context, state.events);
+          } else {
+            return const SizedBox();
+          }
+        }
+    );
+  }
+
+  Widget _buildPopularSectionGridWrapper(BuildContext context, List<EventEntity>? events) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -241,7 +225,6 @@ class _HomePageState extends State<HomePage> {
         SelectChips(
             selectedChipIndex: selectedChipIndex,
             onChipSelected: (String selectedLabel, int index) {
-              print(selectedLabel);
               setState(() {
                 selectedChipIndex = index;
               });
@@ -250,13 +233,13 @@ class _HomePageState extends State<HomePage> {
 
         SizedBox(
           height: MediaQuery.of(context).size.height * 0.6, // for example, 60% of the screen height
-          child: _buildPopularSection(),
+          child: _buildPopularEventList(context, events),
         ),
       ],
     );
   }
 
-  Widget _buildPopularSection() {
+  Widget _buildPopularEventList(BuildContext context, List<EventEntity>? events) {
     return GridView.builder(
       shrinkWrap: true,
       padding: const EdgeInsets.all(16),
@@ -264,70 +247,12 @@ class _HomePageState extends State<HomePage> {
         crossAxisCount: 2,
         crossAxisSpacing: 16,
         mainAxisSpacing: 16,
-        childAspectRatio: 0.8, // Adjust the aspect ratio based on your image sizes and text content
+        childAspectRatio: 0.8,
       ),
-      itemCount: 10, // Replace with your actual number of items
+      itemCount: events?.length,
       itemBuilder: (context, index) {
-        return Card(
-          color: Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          clipBehavior: Clip.antiAliasWithSaveLayer,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(
-                child: Image.network(
-                  'https://www.shutterstock.com/image-vector/default-ui-image-placeholder-wireframes-600nw-1037719192.jpg', // Replace with your event image URL
-                  fit: BoxFit.cover,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Event Title', // Replace with your event title
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Fri, Dec 20 - 13:00 - 15:00', // Replace with your event date and time
-                      style: TextStyle(fontSize: 12, color: MyColors().primary),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.location_on,
-                          color: MyColors().primary,
-                          size: 16,
-                        ),
-                        const SizedBox(width: 4),
-                        const Expanded(
-                          child: Text(
-                            'New Avenue, Washington', // Replace with your event location
-                            style: TextStyle(fontSize: 12),
-                            overflow: TextOverflow.ellipsis
-                          ),
-                        ),
-                        const SizedBox(width: 4),
-                        Icon(
-                          Icons.favorite,
-                          color: MyColors().primary,
-                          size: 16,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
+        final event = events![index];
+        return EventPopularCard(event: event);
       },
     );
   }

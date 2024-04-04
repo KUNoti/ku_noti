@@ -1,6 +1,6 @@
 
 import 'package:ku_noti/core/constants/constants.dart';
-import 'package:ku_noti/features/domain/event/entities/event_entity.dart';
+import 'package:ku_noti/features/domain/event/entities/event.dart';
 
 class EventModel extends EventEntity {
   const EventModel({

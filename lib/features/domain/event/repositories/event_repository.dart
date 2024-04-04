@@ -1,6 +1,6 @@
 
 import 'package:ku_noti/core/resources/data_state.dart';
-import 'package:ku_noti/features/domain/event/entities/event_entity.dart';
+import 'package:ku_noti/features/domain/event/entities/event.dart';
 
 abstract class EventRepository {
   Future<DataState<List<EventEntity>>> getEvents();

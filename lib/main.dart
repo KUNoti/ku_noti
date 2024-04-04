@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ku_noti/config/theme/app_themes.dart';
+import 'package:ku_noti/features/presentation/event/bloc/remote_event_bloc.dart';
 import 'package:ku_noti/features/presentation/user/bloc/auth_bloc.dart';
 import 'package:ku_noti/features/presentation/user/pages/login_page.dart';
 import 'package:ku_noti/injection_container.dart';
@@ -22,6 +23,9 @@ class MyApp extends StatelessWidget {
         providers: [
           BlocProvider<AuthBloc>(
               create: (context) => sl<AuthBloc>()
+          ),
+          BlocProvider<RemoteEventsBloc>(
+              create: (context) => sl<RemoteEventsBloc>()
           )
         ],
         child: MaterialApp(
