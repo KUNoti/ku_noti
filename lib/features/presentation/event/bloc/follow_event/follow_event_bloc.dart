@@ -1,6 +1,4 @@
 
-import 'dart:async';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ku_noti/core/resources/data_state.dart';

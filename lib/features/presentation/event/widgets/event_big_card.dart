@@ -51,11 +51,8 @@ class _EventBigCardState extends State<EventBigCard> {
 
     if (isFollowed) {
       context.read<FollowEventBloc>().add(FollowEventPressed(followRequest));
-      print("call follow");
-
     } else {
       context.read<FollowEventBloc>().add(UnFollowEventPressed(followRequest));
-      print("call unfollow");
     }
   }
 
