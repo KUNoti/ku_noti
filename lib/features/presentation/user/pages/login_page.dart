@@ -133,6 +133,8 @@ class LoginPage extends StatelessWidget {
           signUserIn(context);
         }
       },
+      backColor: Colors.deepPurpleAccent,
+      foreColor: Colors.white,
     );
   }
 

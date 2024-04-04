@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:ku_noti/features/presentation/event/pages/home_page.dart';
-import 'package:ku_noti/features/presentation/user/pages/user_detail_page.dart';
+import 'package:ku_noti/features/presentation/event/pages/user_detail_page.dart';
 import 'package:ku_noti/features/presentation/user/pages/user_setting_page.dart';
 import 'package:ku_noti/navigation/nav_bar.dart';
 import 'package:ku_noti/navigation/nav_model.dart';

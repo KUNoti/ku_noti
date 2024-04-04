@@ -9,6 +9,7 @@ import 'package:ku_noti/features/presentation/user/bloc/auth_event.dart';
 import 'package:ku_noti/features/presentation/user/bloc/auth_state.dart';
 import 'package:ku_noti/features/presentation/user/widgets/custom_button.dart';
 import 'package:ku_noti/features/presentation/user/widgets/custom_textfield.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -150,7 +151,7 @@ class _SignUpPageState extends State<SignUpPage> {
     // ].request();
     //
     // if (status[Permission.camera] != PermissionStatus.granted ||
-    //     status[Permission.camera] != PermissionStatus.granted) {
+    //     status[Permission.photos] != PermissionStatus.granted) {
     //   return;
     // }
 
@@ -234,6 +235,8 @@ class _SignUpPageState extends State<SignUpPage> {
           register(context);
         }
       },
+      backColor: Colors.deepPurpleAccent,
+      foreColor: Colors.white,
     );
   }
 }
