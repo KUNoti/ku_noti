@@ -1,7 +1,10 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ku_noti/features/presentation/event/bloc/remote_event_bloc.dart';
+import 'package:ku_noti/features/presentation/event/bloc/remote_event_event.dart';
+
 import 'package:ku_noti/features/presentation/event/pages/home_page.dart';
-import 'package:ku_noti/features/presentation/event/pages/user_detail_page.dart';
 import 'package:ku_noti/features/presentation/user/pages/user_setting_page.dart';
 import 'package:ku_noti/navigation/nav_bar.dart';
 import 'package:ku_noti/navigation/nav_model.dart';
@@ -25,13 +28,14 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
+    BlocProvider.of<RemoteEventsBloc>(context).add(const GetEvents());
     items = [
       NavModel(
         page: const HomePage(),
         navKey: homeNavKey,
       ),
       NavModel(
-        page: const EventDetailPage(),
+        page: const TabPage(tab: 2),
         navKey: searchNavKey,
       ),
       NavModel(
@@ -97,7 +101,7 @@ class _MainScreenState extends State<MainScreen> {
 class TabPage extends StatelessWidget {
   final int tab;
 
-  const TabPage({Key? key, required this.tab}) : super(key: key);
+  const TabPage({super.key, required this.tab});
 
   @override
   Widget build(BuildContext context) {

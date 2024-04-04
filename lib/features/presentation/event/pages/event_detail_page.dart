@@ -1,80 +1,87 @@
 import 'package:flutter/material.dart';
 import 'package:ku_noti/core/constants/colors.dart';
 import 'package:ku_noti/core/constants/constants.dart';
+import 'package:ku_noti/features/domain/event/entities/event.dart';
 import 'package:ku_noti/features/presentation/user/widgets/custom_button.dart';
 
 class EventDetailPage extends StatelessWidget {
-  const EventDetailPage({super.key});
+  final EventEntity? event;
+  const EventDetailPage({
+    super.key,
+    this.event
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar: _buildBottomButton(context),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Stack(
-              children: [
-                // Event image
-                Image.network(
-                  kDefaultImage,
-                  width: double.infinity,
-                  height: 500,
-                  fit: BoxFit.cover,
-                ),
-                // Back button and like button
-                Positioned(
-                  top: 40, // Adjust padding according to your app bar height
-                  left: 16,
-                  right: 16,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      CircleAvatar(
-                        backgroundColor: Colors.white,
-                        child: IconButton(
-                          icon: const Icon(Icons.arrow_back, color: Colors
-                              .black),
-                          onPressed: () => Navigator.of(context).pop(),
-                        ),
-                      ),
-                      CircleAvatar(
-                        backgroundColor: Colors.white,
-                        child: IconButton(
-                          icon: const Icon(Icons.favorite_border, color: Colors
-                              .black),
-                          onPressed: () {
-                            // Like event action
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+    return SafeArea(
+      child: Scaffold(
+        bottomNavigationBar: _buildBottomButton(context),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              Stack(
                 children: [
-                  // Event title
-                  Text(
-                    'National Music Festival',
-                    style: TextStyle(
-                      fontSize: 24.0,
-                      fontWeight: FontWeight.bold,
+                  // Event image
+                  Image.network(
+                    event?.image ?? kDefaultImage,
+                    width: double.infinity,
+                    height: 500,
+                    fit: BoxFit.cover,
+                  ),
+                  // Back button and like button
+                  Positioned(
+                    top: 40, // Adjust padding according to your app bar height
+                    left: 16,
+                    right: 16,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CircleAvatar(
+                          backgroundColor: Colors.white,
+                          child: IconButton(
+                            icon: const Icon(Icons.arrow_back, color: Colors
+                                .black),
+                            onPressed: () => Navigator.of(context).pop(),
+                          ),
+                        ),
+                        CircleAvatar(
+                          backgroundColor: Colors.white,
+                          child: IconButton(
+                            icon: const Icon(Icons.favorite_border, color: Colors
+                                .black),
+                            onPressed: () {
+                              // Like event action
+                            },
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  // Event tags
-                  const Divider(),
-                  // Event date and time
-                  _buildDateDetail(context),
-                  _buildLocationDetail(context),
                 ],
               ),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Event title
+                    Text(
+                      event?.title ?? 'Event title',
+                      style: const TextStyle(
+                        fontSize: 24.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    // Event tags
+                    const Divider(),
+                    // Event date and time
+                    _buildDateDetail(context),
+                    _buildLocationDetail(context),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -219,4 +226,3 @@ class EventDetailPage extends StatelessWidget {
     );
   }
 }
-// CustomButton

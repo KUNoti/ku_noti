@@ -3,6 +3,7 @@ import 'package:ku_noti/core/constants/colors.dart';
 import 'package:ku_noti/core/constants/constants.dart';
 import 'package:ku_noti/core/format_date_string.dart';
 import 'package:ku_noti/features/domain/event/entities/event.dart';
+import 'package:ku_noti/features/presentation/event/pages/event_detail_page.dart';
 
 class EventBigCard extends StatelessWidget {
   EventEntity? event;
@@ -12,9 +13,21 @@ class EventBigCard extends StatelessWidget {
     this.event
   });
 
+  void _navigateToCardDetailPage(BuildContext context) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => EventDetailPage(event: event),
+        )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return _buildCard(context);
+    return GestureDetector(
+      onTap: () => _navigateToCardDetailPage(context),
+      child: _buildCard(context)
+    );
   }
 
   Widget _buildCard(BuildContext context) {
@@ -77,12 +90,17 @@ class EventBigCard extends StatelessWidget {
                           ),
                           const SizedBox(width: 4),
                           const Spacer(),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8),
-                            child: Icon(
-                              Icons.favorite,
-                              color: MyColors().primary,
-                              size: 16,
+                          GestureDetector(
+                            onTap: () {
+                              print("tabkub");
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 8),
+                              child: Icon(
+                                Icons.favorite,
+                                color: MyColors().primary,
+                                size: 16,
+                              ),
                             ),
                           ),
                         ]
