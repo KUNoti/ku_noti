@@ -13,7 +13,6 @@ class FollowEventBloc extends Bloc<FollowEventEvent, FollowEventState> {
   final FollowEventUseCase _followEventUseCase;
   final UnFollowEventUseCase _unFollowEventUseCase;
   final GetFollowEventUseCase _getFollowEventUseCase;
-  // final Set<String> _followedEventIds = {};
 
   FollowEventBloc(
       this._followEventUseCase,
@@ -24,6 +23,7 @@ class FollowEventBloc extends Bloc<FollowEventEvent, FollowEventState> {
     on <FollowEventPressed> (_onFollowEvent);
     on <UnFollowEventPressed> (_onUnFollowEvent);
     on <LoadFollowedEvents> (_onLoadFollowedEvents);
+    on <FilterByTagEvent> (_onFilterByTag);
   }
 
   Future<void> _onFollowEvent(FollowEventPressed event, Emitter<FollowEventState> emit) async {
@@ -55,9 +55,22 @@ class FollowEventBloc extends Bloc<FollowEventEvent, FollowEventState> {
     final dataState = await _getFollowEventUseCase(params: userId);
     if (dataState is DataSuccess<List<EventEntity>>) {
       final followedEventIds = dataState.data!.map((e) => e.id.toString()).toSet();
-      emit(FollowedEventsLoaded(followedEventIds, dataState.data!));
+      emit(FollowEventSuccess(followedEventIds, dataState.data!));
     } else if (dataState is DataFailed) {
       emit(const FollowEventError("Failed to reload followed events."));
+    }
+  }
+
+  void _onFilterByTag(FilterByTagEvent event, Emitter<FollowEventState> emit) {
+    if (state is FollowEventSuccess) {
+      List<EventEntity> allEvents = List.from((state as FollowEventSuccess).followedEvents!);
+      allEvents.sort((a, b) {
+        if (a.tag == event.tag && b.tag != event.tag) return -1; // a comes first
+        if (a.tag != event.tag && b.tag == event.tag) return 1;  // b comes first
+        return 0; // No change
+      });
+
+      emit(FollowEventSuccess((state as FollowEventSuccess).followedEventIds!, allEvents));
     }
   }
 }

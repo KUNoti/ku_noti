@@ -19,3 +19,7 @@ class UnFollowEventPressed extends FollowEventEvent {
   const UnFollowEventPressed(this.request);
 }
 
+class FilterByTagEvent extends FollowEventEvent {
+  final String tag;
+  const FilterByTagEvent(this.tag);
+}

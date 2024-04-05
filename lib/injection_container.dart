@@ -13,7 +13,7 @@ import 'package:ku_noti/features/domain/event/usecases/unfollow_event_usecase.da
 import 'package:ku_noti/features/domain/user/repositories/user_repository.dart';
 import 'package:ku_noti/features/domain/user/usecases/login_user_usercase.dart';
 import 'package:ku_noti/features/domain/user/usecases/register_user_usecase.dart';
-import 'package:ku_noti/features/presentation/event/bloc/event/remote_event_bloc.dart';
+import 'package:ku_noti/features/presentation/event/bloc/event/events_bloc.dart';
 import 'package:ku_noti/features/presentation/event/bloc/follow_event/follow_event_bloc.dart';
 import 'package:ku_noti/features/presentation/user/bloc/auth_bloc.dart';
 
@@ -69,8 +69,8 @@ Future<void> initializeDependencies() async {
       () => AuthBloc(sl(), sl())
   );
   
-  sl.registerFactory<RemoteEventsBloc>(
-      () => RemoteEventsBloc(sl())
+  sl.registerFactory<EventsBloc>(
+      () => EventsBloc(sl())
   );
 
   sl.registerFactory<FollowEventBloc>(

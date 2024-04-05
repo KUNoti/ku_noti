@@ -1,8 +1,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ku_noti/features/presentation/event/bloc/event/remote_event_bloc.dart';
-import 'package:ku_noti/features/presentation/event/bloc/event/remote_event_event.dart';
+import 'package:ku_noti/features/presentation/event/bloc/event/events_bloc.dart';
+import 'package:ku_noti/features/presentation/event/bloc/event/event_event.dart';
 import 'package:ku_noti/features/presentation/event/bloc/follow_event/follow_event_bloc.dart';
 import 'package:ku_noti/features/presentation/event/bloc/follow_event/follow_event_event.dart';
 import 'package:ku_noti/features/presentation/event/pages/favorites_page.dart';
@@ -34,7 +34,7 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     final userId = context.read<AuthBloc>().state.user?.userId;
-    BlocProvider.of<RemoteEventsBloc>(context).add(const GetEvents());
+    BlocProvider.of<EventsBloc>(context).add(const GetEvents());
     BlocProvider.of<FollowEventBloc>(context).add(LoadFollowedEvents(userId));
     items = [
       NavModel(

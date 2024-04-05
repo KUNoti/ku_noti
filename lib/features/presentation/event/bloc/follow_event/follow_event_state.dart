@@ -20,10 +20,6 @@ class FollowEventLoading extends FollowEventState {
   const FollowEventLoading();
 }
 
-class FollowEventSuccess extends FollowEventState {
-  const FollowEventSuccess();
-}
-
 class FollowEventError extends FollowEventState {
   const FollowEventError(String errorMessage) : super(errorMessage: errorMessage);
 }
@@ -36,12 +32,9 @@ class UnFollowEventError extends FollowEventState {
   const UnFollowEventError(String errorMessage) : super(errorMessage: errorMessage);
 }
 
-class FollowedEventsLoaded extends FollowEventState {
-  const FollowedEventsLoaded(
+class FollowEventSuccess extends FollowEventState {
+  const FollowEventSuccess(
     Set<String> followedEventIds,
     List<EventEntity>? followedEvents,
   ) : super(followedEventIds: followedEventIds , followedEvents: followedEvents);
-
-  @override
-  List<Object?> get props => [followedEventIds, followedEvents];
 }

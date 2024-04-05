@@ -4,9 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ku_noti/core/constants/colors.dart';
 import 'package:ku_noti/core/constants/constants.dart';
 import 'package:ku_noti/features/domain/event/entities/event.dart';
-import 'package:ku_noti/features/presentation/event/bloc/event/remote_event_bloc.dart';
-import 'package:ku_noti/features/presentation/event/bloc/event/remote_event_event.dart';
-import 'package:ku_noti/features/presentation/event/bloc/event/remote_event_state.dart';
+import 'package:ku_noti/features/presentation/event/bloc/event/events_bloc.dart';
+import 'package:ku_noti/features/presentation/event/bloc/event/event_event.dart';
+import 'package:ku_noti/features/presentation/event/bloc/event/event_state.dart';
 import 'package:ku_noti/features/presentation/event/bloc/follow_event/follow_event_bloc.dart';
 import 'package:ku_noti/features/presentation/event/bloc/follow_event/follow_event_state.dart';
 import 'package:ku_noti/features/presentation/event/pages/search_page.dart';
@@ -123,20 +123,20 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildFeaturedSection(BuildContext context) {
-    return BlocBuilder<RemoteEventsBloc, RemoteEventsState>(
+    return BlocBuilder<EventsBloc, EventsState>(
         builder: (context, state) {
-          if (state is RemoteEventsLoading) {
+          if (state is EventsLoading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (state is RemoteEventsError) {
+          } else if (state is EventsError) {
             return Center(
               child: IconButton(
                 icon: const Icon(Icons.refresh),
                 onPressed: () {
-                  context.read<RemoteEventsBloc>().add(const GetEvents());
+                  context.read<EventsBloc>().add(const GetEvents());
                 },
               ),
             );
-          } else if (state is RemoteEventsDone) {
+          } else if (state is EventSuccess) {
             return Column(children: [
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -193,20 +193,20 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildPopularSection(BuildContext context) {
-    return BlocBuilder<RemoteEventsBloc, RemoteEventsState>(
+    return BlocBuilder<EventsBloc, EventsState>(
         builder: (context, state) {
-          if (state is RemoteEventsLoading) {
+          if (state is EventsLoading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (state is RemoteEventsError) {
+          } else if (state is EventsError) {
             return Center(
               child: IconButton(
                 icon: const Icon(Icons.refresh),
                 onPressed: () {
-                  context.read<RemoteEventsBloc>().add(const GetEvents());
+                  context.read<EventsBloc>().add(const GetEvents());
                 },
               ),
             );
-          } else if (state is RemoteEventsDone) {
+          } else if (state is EventSuccess) {
             return _buildPopularSectionGridWrapper(context, state.events);
           } else {
             return const SizedBox();
