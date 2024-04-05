@@ -1,27 +1,57 @@
 PODS:
+  - ar_location_viewer (0.0.2):
+    - Flutter
+  - camera_avfoundation (0.0.1):
+    - Flutter
   - Flutter (1.0.0)
+  - geolocator_apple (1.2.0):
+    - Flutter
   - image_picker_ios (0.0.1):
     - Flutter
-  - permission_handler_apple (9.1.1):
+  - native_device_orientation (0.0.1):
+    - Flutter
+  - permission_handler_apple (9.3.0):
+    - Flutter
+  - sensors_plus (0.0.1):
     - Flutter
 
 DEPENDENCIES:
+  - ar_location_viewer (from `.symlinks/plugins/ar_location_viewer/ios`)
+  - camera_avfoundation (from `.symlinks/plugins/camera_avfoundation/ios`)
   - Flutter (from `Flutter`)
+  - geolocator_apple (from `.symlinks/plugins/geolocator_apple/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
+  - native_device_orientation (from `.symlinks/plugins/native_device_orientation/ios`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
+  - sensors_plus (from `.symlinks/plugins/sensors_plus/ios`)
 
 EXTERNAL SOURCES:
+  ar_location_viewer:
+    :path: ".symlinks/plugins/ar_location_viewer/ios"
+  camera_avfoundation:
+    :path: ".symlinks/plugins/camera_avfoundation/ios"
   Flutter:
     :path: Flutter
+  geolocator_apple:
+    :path: ".symlinks/plugins/geolocator_apple/ios"
   image_picker_ios:
     :path: ".symlinks/plugins/image_picker_ios/ios"
+  native_device_orientation:
+    :path: ".symlinks/plugins/native_device_orientation/ios"
   permission_handler_apple:
     :path: ".symlinks/plugins/permission_handler_apple/ios"
+  sensors_plus:
+    :path: ".symlinks/plugins/sensors_plus/ios"
 
 SPEC CHECKSUMS:
+  ar_location_viewer: bd3c1103dcfe0e4577de5fb9701e3a1dd11caba4
+  camera_avfoundation: 759172d1a77ae7be0de08fc104cfb79738b8a59e
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  geolocator_apple: 6cbaf322953988e009e5ecb481f07efece75c450
   image_picker_ios: b545a5f16c0fa88e3ecbbce3ed4de45567a8ec18
-  permission_handler_apple: e76247795d700c14ea09e3a2d8855d41ee80a2e6
+  native_device_orientation: 348b10c346a60ebbc62fb235a4fdb5d1b61a8f55
+  permission_handler_apple: 9878588469a2b0d0fc1e048d9f43605f92e6cec2
+  sensors_plus: 42b9de1b8237675fa8d8121e4bb93be0f79fa61d
 
 PODFILE CHECKSUM: 819463e6a0290f5a72f145ba7cde16e8b6ef0796
 
