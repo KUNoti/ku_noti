@@ -176,9 +176,9 @@ class _HomePageState extends State<HomePage> {
           return BlocListener<FollowEventBloc, FollowEventState>(
             listener: (context, state) {
               if (state is FollowEventSuccess) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Followed successfully!')),
-                );
+                // ScaffoldMessenger.of(context).showSnackBar(
+                //   const SnackBar(content: Text('Followed successfully!')),
+                // );
               } else if (state is FollowEventError) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text(state.errorMessage ?? 'Error following')),

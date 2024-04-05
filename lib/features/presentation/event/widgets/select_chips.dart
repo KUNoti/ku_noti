@@ -4,7 +4,7 @@ import 'package:ku_noti/core/constants/colors.dart';
 typedef ChipSelectedCallback = void Function(String selectedLabel, int index);
 
 class SelectChips extends StatelessWidget {
-  final List<String> chipLabels = ['All', 'KU','Music', 'Art', 'Workshop'];
+  final List<String> chipLabels = ['All', 'KU','', 'Art', 'Workshop'];
   final List<IconData> chipIcons = [Icons.all_inclusive,Icons.school, Icons.music_note, Icons.brush, Icons.build];
   final ChipSelectedCallback onChipSelected;
   final int selectedChipIndex;
@@ -36,9 +36,10 @@ class SelectChips extends StatelessWidget {
                 chipLabels[index],
                 style: TextStyle(
                   color: selectedChipIndex == index ? Colors.white : Colors.black,
+                  fontWeight: FontWeight.bold
                 ),
               ),
-              backgroundColor: selectedChipIndex == index ? MyColors().primary : Colors.grey.shade200,
+              backgroundColor: selectedChipIndex == index ? MyColors().primary : Colors.white10,
               selectedColor: MyColors().primary,
               selected: selectedChipIndex == index,
               onSelected: (_) {
