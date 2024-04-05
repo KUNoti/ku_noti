@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ku_noti/core/constants/colors.dart';
 import 'package:ku_noti/core/constants/constants.dart';
+import 'package:ku_noti/core/format_date_string.dart';
 import 'package:ku_noti/features/data/event/models/follow_event_request.dart';
 import 'package:ku_noti/features/domain/event/entities/event.dart';
 import 'package:ku_noti/features/presentation/event/bloc/follow_event/follow_event_bloc.dart';
@@ -79,11 +80,12 @@ class EventHorizCard extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15.0),
       ),
-      child: Row(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: ClipRRect(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0), // Add padding around the Row for better spacing
+        child: Row(
+          mainAxisSize: MainAxisSize.min, // Ensure Row takes up only necessary space
+          children: [
+            ClipRRect(
               borderRadius: const BorderRadius.all(Radius.circular(15.0)),
               child: Image.network(
                 event?.image ?? kDefaultImage,
@@ -92,54 +94,57 @@ class EventHorizCard extends StatelessWidget {
                 width: 120,
               ),
             ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'National Music Festival', // Replace with your event title
-                style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Mon, Dec 24 - 18:00 - 23:00 PM', // Replace with your event time
-                style:  TextStyle(color: MyColors().primary,fontWeight: FontWeight.bold, fontSize: 12),
-              ),
-              const SizedBox(height: 8),
-              Row(
-                  children: [
-                    Icon(
-                      Icons.location_on,
-                      color: MyColors().primary,
-                      size: 16,
-                    ),
-                    const SizedBox(width: 4),
-                    const Text(
-                      'Grand Park, New York', // Replace with your event location
-                      style: TextStyle(color: Colors.black, fontSize: 14),
-                    ),
-                    const SizedBox(width: 20),
-                    GestureDetector(
-                      onTap: () {
-                        onTap(context);
-                      },
-                      child: Icon(
-                        isFollowed ? Icons.favorite : Icons.favorite_border,
+            const SizedBox(width: 8), // Add some spacing between the image and the text
+            Expanded( // Wrap Column in an Expanded widget
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    event?.title ?? 'Event title',
+                    style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    formatDate(event?.startDateTime ?? DateTime.now()),
+                    style: TextStyle(color: MyColors().primary, fontWeight: FontWeight.bold, fontSize: 12),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.location_on,
                         color: MyColors().primary,
                         size: 16,
                       ),
-                    ),
-                    // const SizedBox(width: 10),
-                  ]
+                      const SizedBox(width: 4),
+                      Expanded( // Wrap Text in an Expanded widget to ensure it fits within the available space
+                        child: Text(
+                          event?.locationName ?? 'location name',
+                          style: const TextStyle(fontSize: 12),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          onTap(context);
+                        },
+                        child: Icon(
+                          isFollowed ? Icons.favorite : Icons.favorite_border,
+                          color: MyColors().primary,
+                          size: 16,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            ],
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }
-
 
 }
 
