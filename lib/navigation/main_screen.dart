@@ -1,6 +1,15 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ku_noti/features/presentation/event/bloc/event/events_bloc.dart';
+import 'package:ku_noti/features/presentation/event/bloc/event/event_event.dart';
+import 'package:ku_noti/features/presentation/event/bloc/follow_event/follow_event_bloc.dart';
+import 'package:ku_noti/features/presentation/event/bloc/follow_event/follow_event_event.dart';
+import 'package:ku_noti/features/presentation/event/pages/favorites_page.dart';
+
 import 'package:ku_noti/features/presentation/event/pages/home_page.dart';
+import 'package:ku_noti/features/presentation/user/bloc/auth_bloc.dart';
+import 'package:ku_noti/features/presentation/user/pages/user_setting_page.dart';
 import 'package:ku_noti/navigation/nav_bar.dart';
 import 'package:ku_noti/navigation/nav_model.dart';
 
@@ -14,15 +23,19 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   final homeNavKey = GlobalKey<NavigatorState>();
   final searchNavKey = GlobalKey<NavigatorState>();
-  final notificationNavKey = GlobalKey<NavigatorState>();
+  final favoritesNavKey = GlobalKey<NavigatorState>();
   final profileNavKey = GlobalKey<NavigatorState>();
   final testNavKey = GlobalKey<NavigatorState>();
   int selectedTab = 0;
   List<NavModel> items = [];
 
+
   @override
   void initState() {
     super.initState();
+    final userId = context.read<AuthBloc>().state.user?.userId;
+    BlocProvider.of<EventsBloc>(context).add(const GetEvents());
+    BlocProvider.of<FollowEventBloc>(context).add(LoadFollowedEvents(userId));
     items = [
       NavModel(
         page: const HomePage(),
@@ -33,16 +46,16 @@ class _MainScreenState extends State<MainScreen> {
         navKey: searchNavKey,
       ),
       NavModel(
-        page: const TabPage(tab: 3),
-        navKey: notificationNavKey,
+        page: const FavoritesPage(),
+        navKey: favoritesNavKey,
       ),
       NavModel(
         page: const TabPage(tab: 4),
-        navKey: profileNavKey,
+        navKey: testNavKey,
       ),
       NavModel(
-        page: const TabPage(tab: 5),
-        navKey: testNavKey,
+        page: const UserSettingsPage(),
+        navKey: profileNavKey,
       ),
     ];
   }
@@ -95,7 +108,7 @@ class _MainScreenState extends State<MainScreen> {
 class TabPage extends StatelessWidget {
   final int tab;
 
-  const TabPage({Key? key, required this.tab}) : super(key: key);
+  const TabPage({super.key, required this.tab});
 
   @override
   Widget build(BuildContext context) {

@@ -25,7 +25,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       final dataState = await _loginUserUseCase(params: event.toLoginRequest());
       if (dataState is DataSuccess) {
-
+        print(dataState.data!.toString());
         emit(
             AuthDone(dataState.data!)
         );

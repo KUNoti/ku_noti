@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ku_noti/features/presentation/event/pages/home_page.dart';
+import 'package:ku_noti/config/theme/app_themes.dart';
+import 'package:ku_noti/features/presentation/event/bloc/event/events_bloc.dart';
+import 'package:ku_noti/features/presentation/event/bloc/follow_event/follow_event_bloc.dart';
 import 'package:ku_noti/features/presentation/user/bloc/auth_bloc.dart';
 import 'package:ku_noti/features/presentation/user/pages/login_page.dart';
 import 'package:ku_noti/injection_container.dart';
@@ -22,9 +24,16 @@ class MyApp extends StatelessWidget {
         providers: [
           BlocProvider<AuthBloc>(
               create: (context) => sl<AuthBloc>()
+          ),
+          BlocProvider<EventsBloc>(
+              create: (context) => sl<EventsBloc>()
+          ),
+          BlocProvider<FollowEventBloc>(
+              create: (context) => sl<FollowEventBloc>()
           )
         ],
         child: MaterialApp(
+          theme: theme(),
           home: LoginPage(),
         )
     );

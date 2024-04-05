@@ -21,12 +21,13 @@ class _UserService implements UserService {
   String? baseUrl;
 
   @override
-  Future<HttpResponse<UserModel>> login(LoginRequest request) async {
+  Future<HttpResponse<UserModel>> login(LoginRequest? request) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    _data.addAll(request.toJson());
+    _data.addAll(request?.toJson() ?? <String, dynamic>{});
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<HttpResponse<UserModel>>(Options(
       method: 'POST',
@@ -51,44 +52,55 @@ class _UserService implements UserService {
 
   @override
   Future<HttpResponse<void>> register(
-    String username,
-    String password,
-    String name,
-    String email,
-    File imageFile,
-    String token,
+    String? username,
+    String? password,
+    String? name,
+    String? email,
+    File? imageFile,
+    String? token,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     final _data = FormData();
-    _data.fields.add(MapEntry(
-      'username',
-      username,
-    ));
-    _data.fields.add(MapEntry(
-      'password',
-      password,
-    ));
-    _data.fields.add(MapEntry(
-      'name',
-      name,
-    ));
-    _data.fields.add(MapEntry(
-      'email',
-      email,
-    ));
+    if (username != null) {
+      _data.fields.add(MapEntry(
+        'username',
+        username,
+      ));
+    }
+    if (password != null) {
+      _data.fields.add(MapEntry(
+        'password',
+        password,
+      ));
+    }
+    if (name != null) {
+      _data.fields.add(MapEntry(
+        'name',
+        name,
+      ));
+    }
+    if (email != null) {
+      _data.fields.add(MapEntry(
+        'email',
+        email,
+      ));
+    }
     _data.files.add(MapEntry(
       'profile_file',
       MultipartFile.fromFileSync(
-        imageFile.path,
+        imageFile!.path,
         filename: imageFile.path.split(Platform.pathSeparator).last,
       ),
     ));
-    _data.fields.add(MapEntry(
-      'token',
-      token,
-    ));
+    if (token != null) {
+      _data.fields.add(MapEntry(
+        'token',
+        token,
+      ));
+    }
     final _result =
         await _dio.fetch<void>(_setStreamType<HttpResponse<void>>(Options(
       method: 'POST',

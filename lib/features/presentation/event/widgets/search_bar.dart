@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:ku_noti/core/constants/colors.dart';
 
 class MySearchBarWidget extends StatefulWidget {
-  const MySearchBarWidget({super.key});
+  TextEditingController controller;
+  MySearchBarWidget(this.controller, {super.key});
 
   @override
   MySearchBarWidgetState createState() => MySearchBarWidgetState();
@@ -10,7 +11,7 @@ class MySearchBarWidget extends StatefulWidget {
 
 class MySearchBarWidgetState extends State<MySearchBarWidget> {
   late FocusNode _focusNode;
-  Color _iconColor = Colors.grey; // Initial icon color
+  Color _iconColor = Colors.grey;
 
   @override
   void initState() {
@@ -39,6 +40,7 @@ class MySearchBarWidgetState extends State<MySearchBarWidget> {
       padding: const EdgeInsets.symmetric(horizontal: 0.0),
       margin: const EdgeInsets.all(16.0),
       child: TextField(
+        controller: widget.controller,
         focusNode: _focusNode,
         decoration: InputDecoration(
           hintText: 'What event are you looking for...',
@@ -60,5 +62,4 @@ class MySearchBarWidgetState extends State<MySearchBarWidget> {
       ),
     );
   }
-
 }

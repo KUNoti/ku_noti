@@ -3,38 +3,34 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ku_noti/core/resources/data_state.dart';
 import 'package:ku_noti/features/domain/event/usecases/get_events_usecase.dart';
-import 'package:ku_noti/features/presentation/event/bloc/remote_event_event.dart';
-import 'package:ku_noti/features/presentation/event/bloc/remote_event_state.dart';
+import 'package:ku_noti/features/presentation/event/bloc/event/event_event.dart';
+import 'package:ku_noti/features/presentation/event/bloc/event/event_state.dart';
 
-class RemoteEventsBloc extends Bloc<RemoteEventsEvent, RemoteEventsState> {
+
+class EventsBloc extends Bloc<EventsEvent, EventsState> {
   final GetEventsUseCase _getEventUseCase;
 
-  RemoteEventsBloc(
+  EventsBloc(
       this._getEventUseCase,
-      // this._createEventUseCase,
-      // this._followEventUseCase,
-      // this._unFollowEventUseCase
-      ) : super(const RemoteEventsLoading()
+      ) : super(const EventsLoading()
   ) {
     on <GetEvents> (onGetEvents);
     // on <CreateEvent> (onCreateEvent);
-    // on <FollowEvent> (onFollowEvent);
-    // on <UnFollowEvent> (onUnFollowEvent);
   }
 
-  void onGetEvents(GetEvents event, Emitter<RemoteEventsState> emit) async {
+  void onGetEvents(GetEvents event, Emitter<EventsState> emit) async {
     try {
       final dataState = await _getEventUseCase();
 
       if (dataState is DataSuccess && dataState.data!.isNotEmpty) {
         emit(
-            RemoteEventsDone(dataState.data!)
+            EventSuccess(dataState.data!)
         );
       }
 
       if (dataState is DataFailed) {
         emit(
-            RemoteEventsError(dataState.error!)
+            const EventsError("Fetch Error error")
         );
       }
     } catch (e) {

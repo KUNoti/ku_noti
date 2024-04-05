@@ -1,346 +1,310 @@
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ku_noti/core/constants/colors.dart';
-import 'package:ku_noti/features/presentation/event/widgets/search_bar.dart';
+import 'package:ku_noti/core/constants/constants.dart';
+import 'package:ku_noti/features/domain/event/entities/event.dart';
+import 'package:ku_noti/features/presentation/event/bloc/event/events_bloc.dart';
+import 'package:ku_noti/features/presentation/event/bloc/event/event_event.dart';
+import 'package:ku_noti/features/presentation/event/bloc/event/event_state.dart';
+import 'package:ku_noti/features/presentation/event/bloc/follow_event/follow_event_bloc.dart';
+import 'package:ku_noti/features/presentation/event/bloc/follow_event/follow_event_state.dart';
+import 'package:ku_noti/features/presentation/event/pages/search_page.dart';
+import 'package:ku_noti/features/presentation/event/widgets/event_big_card.dart';
+import 'package:ku_noti/features/presentation/event/widgets/event_popular_card.dart';
+import 'package:ku_noti/features/presentation/event/widgets/select_chips.dart';
+import 'package:ku_noti/features/presentation/user/bloc/auth_bloc.dart';
+import 'package:ku_noti/features/presentation/user/bloc/auth_state.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+
+  const HomePage({
+    super.key,
+
+  });
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  final List<String> chipLabels = ['All', 'Music', 'Art', 'Workshop'];
-  // State to keep track of the selected chip
   int selectedChipIndex = 0;
+
+  void navigationToSearchPage(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const SearchPage(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-      backgroundColor: Colors.white,
-      appBar: _buildAppBar(),
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            MySearchBarWidget(),
-            _buildFeaturedSection(),
-            _buildPopularSectionGridWrapper(context)
-          ],
-        ),
-      ),
-    );
-  }
-
-  PreferredSizeWidget _buildAppBar() {
-    return AppBar(
-      backgroundColor: Colors.transparent, // Assuming a transparent AppBar
-      elevation: 0, // No shadow
-      titleSpacing: 10, // Remove the default horizontal title padding
-      title: Row(
-        children: [
-          CircleAvatar(
-            radius: 30, // Adjust the radius for a larger image
-            backgroundImage: NetworkImage('https://www.shutterstock.com/image-vector/default-ui-image-placeholder-wireframes-600nw-1037719192.jpg'),
-          ),
-          SizedBox(width: 16), // Spacing between the avatar and the text
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center, // Align text to the center vertically
-            children: [
-              Text(
-                'Good Morning 👋', // Smaller text above the name
-                style: TextStyle(
-                  color: Colors.black, // Assuming a dark text color
-                  fontSize: 16, // Smaller font size for the greeting
-                ),
-              ),
-              Text(
-                'Andrew Ainsley', // Name in a larger text
-                style: TextStyle(
-                  color: Colors.black, // Assuming a dark text color
-                  fontSize: 24, // Larger font size for the name
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-      actions: [
-        Row(
-          children: [
-            IconButton(
-              icon: Icon(
-                Icons.notifications, // Replace with your icon as per your design
-                color: Colors.black, // Assuming a dark icon color
-              ),
-              onPressed: () {
-                // Action for the button press
-              },
-            ),
-            SizedBox(width: 16)
-          ]
-        ),
-      ],
-    );
-  }
-
-  Widget _buildFeaturedSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Featured',
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              ),
-              TextButton(
-                onPressed: () {
-                  // Handle 'See All' tap
-                },
-                child: Text('See All',style: TextStyle(color: MyColors().primary),),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(
-          height: 350, // Adjust height to fit content
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: 10, // Replace with your actual number of items
-            itemBuilder: (context, index) {
-              return Container(
-                width: 300, // Adjust width to fit content
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Card(
-                  clipBehavior: Clip.antiAlias,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(24), // Rounded corners
-                  ),
-                  child: Stack(
-                    children: [
-                      Image.network(
-                        'https://www.shutterstock.com/image-vector/default-ui-image-placeholder-wireframes-600nw-1037719192.jpg', // Replace with your image URLs
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                        height: double.infinity,
-                      ),
-                      Positioned(
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        child: Container(
-                          padding: const EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(1),
-                            borderRadius: const BorderRadius.only(
-                              bottomLeft: Radius.circular(15),
-                              bottomRight: Radius.circular(15),
-                            ),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'National Music Festival', // Replace with your event title
-                                style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              SizedBox(height: 4),
-                              Text(
-                                'Mon, Dec 24 - 18:00 - 23:00 PM', // Replace with your event time
-                                style:  TextStyle(color: MyColors().primary,fontWeight: FontWeight.bold, fontSize: 14),
-                              ),
-                              SizedBox(height: 4),
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.location_on,
-                                    color: MyColors().primary,
-                                    size: 16,
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    'Grand Park, New York', // Replace with your event location
-                                    style: TextStyle(color: Colors.black, fontSize: 14),
-                                  ),
-                                  SizedBox(width: 4),
-                                  Icon(
-                                    Icons.favorite,
-                                    color: MyColors().primary,
-                                    size: 16,
-                                  ),
-                                ]
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildPopularSectionGridWrapper(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('Popular Event 🔥', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-              TextButton(
-                onPressed: () {
-                  // Handle 'See All' tap
-                },
-                child: Text('See All', style: TextStyle(color: MyColors().primary),),
-              ),
-            ],
-          ),
-        ),
-        _buildSelectChips(),
-        Container(
-          height: MediaQuery.of(context).size.height * 0.6, // for example, 60% of the screen height
-          child: _buildPopularSection(),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildPopularSection() {
-    return GridView.builder(
-      shrinkWrap: true,
-      // physics: NeverScrollableScrollPhysics(),
-      padding: EdgeInsets.all(16),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 16,
-        mainAxisSpacing: 16,
-        childAspectRatio: 0.8, // Adjust the aspect ratio based on your image sizes and text content
-      ),
-      itemCount: 10, // Replace with your actual number of items
-      itemBuilder: (context, index) {
-        return Card(
-          color: Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          clipBehavior: Clip.antiAliasWithSaveLayer,
+    return  SafeArea(
+      child: Scaffold(
+        appBar: _buildAppBar(context),
+        body: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Expanded(
-                child: Image.network(
-                  'https://www.shutterstock.com/image-vector/default-ui-image-placeholder-wireframes-600nw-1037719192.jpg', // Replace with your event image URL
-                  fit: BoxFit.cover,
+              _buildSearchBarButton(context),
+              _buildFeaturedSection(context),
+               const SizedBox(height: 16),
+              _buildPopularSection(context)
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  PreferredSizeWidget _buildAppBar(BuildContext context) {
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(kToolbarHeight),
+      child: BlocBuilder<AuthBloc, AuthState>(
+        builder: (context, state) {
+          String name = 'Guest';
+          String imagePath = kDefaultImage;
+
+          if (state is AuthDone && state.user != null) {
+            name = state.user!.name!;
+            imagePath = state.user!.imagePath!;
+          }
+
+          // Build the AppBar with user info
+          return AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            titleSpacing: 10,
+            title: Row(
+              children: [
+                CircleAvatar(
+                  radius: 30,
+                  backgroundImage: NetworkImage(imagePath),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(8),
-                child: Column(
+                const SizedBox(width: 16),
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      'Event Title', // Replace with your event title
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                    const Text(
+                      'Good Morning 👋',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                      ),
                     ),
-                    SizedBox(height: 4),
                     Text(
-                      'Fri, Dec 20 - 13:00 - 15:00', // Replace with your event date and time
-                      style: TextStyle(fontSize: 12, color: MyColors().primary),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    SizedBox(height: 4),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.location_on,
-                          color: MyColors().primary,
-                          size: 16,
-                        ),
-                        SizedBox(width: 4),
-                        Expanded(
-                          child: Text(
-                            'New Avenue, Washington', // Replace with your event location
-                            style: TextStyle(fontSize: 12),
-                            overflow: TextOverflow.ellipsis
-                          ),
-                        ),
-                        SizedBox(width: 4),
-                        Icon(
-                          Icons.favorite,
-                          color: MyColors().primary,
-                          size: 16,
-                        ),
-                      ],
+                      name,
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildSelectChips() {
-    // Dummy data for the chips, replace with your actual data
-    // Default to the first chip being selected
-
-    return Container(
-      height: 50, // Adjust the height to fit your design
-      margin: EdgeInsets.symmetric(vertical: 10), // Vertical spacing for aesthetic
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: chipLabels.length,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8),
-            child: ChoiceChip(
-              label: Text(
-                chipLabels[index],
-                style: TextStyle(
-                  color: selectedChipIndex == index ? Colors.white : Colors.black,
-                ),
-              ),
-              backgroundColor: selectedChipIndex == index ? MyColors().primary : Colors.grey.shade200,
-              selectedColor: MyColors().primary, // The color when the chip is selected
-              selected: selectedChipIndex == index,
-              onSelected: (bool selected) {
-                // Set state or update the UI accordingly when a chip is selected
-                // You will need to use a StatefulWidget or another state management solution
-                setState(() {
-                  if (selected) {
-                    selectedChipIndex = index;
-                  }
-                });
-              },
-              shape: StadiumBorder(
-                side: BorderSide(
-                  color: selectedChipIndex == index ? MyColors().primary : Colors.transparent,
-                ),
-              ),
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8), // Inner padding for the chip
+              ],
             ),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.notifications, color: Colors.black),
+                onPressed: () {
+                  // Action for the button press
+                },
+              ),
+              const SizedBox(width: 16),
+            ],
           );
         },
       ),
     );
   }
+
+  Widget _buildFeaturedSection(BuildContext context) {
+    return BlocBuilder<EventsBloc, EventsState>(
+        builder: (context, state) {
+          if (state is EventsLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is EventsError) {
+            return Center(
+              child: IconButton(
+                icon: const Icon(Icons.refresh),
+                onPressed: () {
+                  context.read<EventsBloc>().add(const GetEvents());
+                },
+              ),
+            );
+          } else if (state is EventSuccess) {
+            return Column(children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Featured',
+                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        navigationToSearchPage(context);
+                      },
+                      child: Text('See All',style: TextStyle(color: MyColors().primary),),
+                    ),
+                  ],
+                ),
+              ),
+              _buildFeaturedEventList(context, state.events)
+            ]);
+          } else {
+            return const SizedBox();
+          }
+        }
+    );
+  }
+
+  Widget _buildFeaturedEventList(BuildContext context, List<EventEntity>? events) {
+    return SizedBox(
+      height: 350,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: events?.length ?? 0,
+        itemBuilder: (context, index) {
+          final event = events![index];
+          return BlocListener<FollowEventBloc, FollowEventState>(
+            listener: (context, state) {
+              if (state is FollowEventSuccess) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Followed successfully!')),
+                );
+              } else if (state is FollowEventError) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(state.errorMessage ?? 'Error following')),
+                );
+              }
+            },
+            child: EventBigCard(event: event)
+          );
+        }
+      ),
+    );
+  }
+
+  Widget _buildPopularSection(BuildContext context) {
+    return BlocBuilder<EventsBloc, EventsState>(
+        builder: (context, state) {
+          if (state is EventsLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is EventsError) {
+            return Center(
+              child: IconButton(
+                icon: const Icon(Icons.refresh),
+                onPressed: () {
+                  context.read<EventsBloc>().add(const GetEvents());
+                },
+              ),
+            );
+          } else if (state is EventSuccess) {
+            return _buildPopularSectionGridWrapper(context, state.events);
+          } else {
+            return const SizedBox();
+          }
+        }
+    );
+  }
+
+  Widget _buildPopularSectionGridWrapper(BuildContext context, List<EventEntity>? events) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text('Popular Event 🔥', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+
+              GestureDetector(
+                onTap: () {
+                  navigationToSearchPage(context);
+                },
+                child: Text('See All', style: TextStyle(color: MyColors().primary))
+              ),
+            ],
+          ),
+        ),
+
+        SelectChips(
+            selectedChipIndex: selectedChipIndex,
+            onChipSelected: (String selectedLabel, int index) {
+              setState(() {
+                selectedChipIndex = index;
+              });
+            }
+        ),
+
+        SizedBox(
+          height: MediaQuery.of(context).size.height * 0.6, // for example, 60% of the screen height
+          child: _buildPopularEventList(context, events),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPopularEventList(BuildContext context, List<EventEntity>? events) {
+    return GridView.builder(
+      shrinkWrap: true,
+      padding: const EdgeInsets.all(16),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
+        childAspectRatio: 0.8,
+      ),
+      itemCount: events?.length,
+      itemBuilder: (context, index) {
+        final event = events![index];
+        return EventPopularCard(event: event);
+      },
+    );
+  }
+
+  Widget _buildSearchBarButton(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        navigationToSearchPage(context);
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        margin: const EdgeInsets.all(16.0),
+        height: 50,
+        decoration: BoxDecoration(
+          color: Colors.grey[100],
+          borderRadius: BorderRadius.circular(30.0),
+          border: Border.all(
+            color: Colors.grey.shade300,
+          ),
+        ),
+        child: Row(
+          children: [
+            const Icon(Icons.search, color: Colors.grey),
+            const SizedBox(width: 10),
+            const Expanded(
+              child: Text(
+                'What event are you looking for...',
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 16.0,
+                ),
+              ),
+            ),
+            Icon(Icons.tune, color: MyColors().primary),
+          ],
+        ),
+      ),
+    );
+  }
 }
+

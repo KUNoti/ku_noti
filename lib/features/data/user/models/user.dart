@@ -1,7 +1,7 @@
 import 'package:ku_noti/features/domain/user/entities/user.dart';
 
 class UserModel extends UserEntity {
-  UserModel({
+  const UserModel({
     super.userId,
     super.username,
     super.password,
