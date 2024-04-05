@@ -61,18 +61,6 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
       List<EventEntity> allEvents = List.from((state as EventSuccess).events!);
 
       String searchLowercase = searchEvent.keyword.toLowerCase();
-      // List<EventEntity> filteredEvents = allEvents.where((event) {
-      //   String titleLowercase = event.title?.toLowerCase() ?? '';
-      //   String detailLowercase = event.detail?.toLowerCase() ?? '';
-      //   String tagLowercase = event.tag?.toLowerCase() ?? '';
-      //
-      //   // Check if title, detail, or tag contains the keyword
-      //   return titleLowercase.contains(searchLowercase) ||
-      //       detailLowercase.contains(searchLowercase) ||
-      //       tagLowercase.contains(searchLowercase);
-      // }).toList();
-
-      // Sort events by relevance: more points for title matches, fewer for details, even fewer for tags
       allEvents.sort((a, b) {
         int scoreA = (a.title?.toLowerCase().contains(searchLowercase) ?? false ? 3 : 0) +
             (a.detail?.toLowerCase().contains(searchLowercase) ?? false ? 2 : 0) +
