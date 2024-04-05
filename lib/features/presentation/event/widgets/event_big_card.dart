@@ -7,10 +7,11 @@ import 'package:ku_noti/features/data/event/models/follow_event_request.dart';
 import 'package:ku_noti/features/domain/event/entities/event.dart';
 import 'package:ku_noti/features/presentation/event/bloc/follow_event/follow_event_bloc.dart';
 import 'package:ku_noti/features/presentation/event/bloc/follow_event/follow_event_event.dart';
+import 'package:ku_noti/features/presentation/event/bloc/follow_event/follow_event_state.dart';
 import 'package:ku_noti/features/presentation/event/pages/event_detail_page.dart';
 import 'package:ku_noti/features/presentation/user/bloc/auth_bloc.dart';
 
-class EventBigCard extends StatefulWidget {
+class EventBigCard extends StatelessWidget {
   EventEntity? event;
 
   EventBigCard({
@@ -18,45 +19,62 @@ class EventBigCard extends StatefulWidget {
     this.event
   });
 
-  @override
-  State<EventBigCard> createState() => _EventBigCardState();
-}
-
-class _EventBigCardState extends State<EventBigCard> {
-  bool isFollowed = false;
-
+  // bool isFollowed = false;
   void _navigateToCardDetailPage(BuildContext context) {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => EventDetailPage(event: widget.event),
+            builder: (context) => EventDetailPage(event: event),
         )
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => _navigateToCardDetailPage(context),
-      child: _buildCard(context)
+    return BlocListener<FollowEventBloc, FollowEventState>(
+      listener: (context, state) {
+        if (state is FollowEventError) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(state.errorMessage ?? 'Error occurred')));
+        }
+      },
+      child: BlocBuilder<FollowEventBloc, FollowEventState>(
+        builder: (context, state) {
+          bool? isFollowed = false;
+          if (state is FollowedEventsLoaded) {
+            isFollowed = state.followedEventIds?.contains(event?.id.toString());
+          }
+
+          // Build your widget based on the state
+          return GestureDetector(
+              onTap: () => _navigateToCardDetailPage(context),
+              child: _buildCard(context, isFollowed) // Ensure _buildCard uses isFollowed to decide the icon
+          );
+        },
+      ),
     );
   }
 
   void onTap(BuildContext context) {
     final userId = context.read<AuthBloc>().state.user?.userId;
-    final followRequest = FollowRequest(userId: userId, eventId: widget.event?.id);
-    setState(() {
-      isFollowed = !isFollowed;
-    });
+    if (userId == null) return; // Handle not logged in user
 
-    if (isFollowed) {
-      context.read<FollowEventBloc>().add(FollowEventPressed(followRequest));
-    } else {
-      context.read<FollowEventBloc>().add(UnFollowEventPressed(followRequest));
+    final currentState = context.read<FollowEventBloc>().state;
+    if (currentState is FollowedEventsLoaded) {
+      final isCurrentlyFollowed = currentState.followedEventIds?.contains(event?.id.toString());
+      final followRequest = FollowRequest(userId: userId, eventId: event?.id);
+
+      if (isCurrentlyFollowed!) {
+        context.read<FollowEventBloc>().add(UnFollowEventPressed(followRequest));
+        // context.read<FollowEventBloc>().add((LoadFollowedEvents(userId)));
+      } else {
+        context.read<FollowEventBloc>().add(FollowEventPressed(followRequest));
+        // context.read<FollowEventBloc>().add((LoadFollowedEvents(userId)));
+      }
     }
   }
 
-  Widget _buildCard(BuildContext context) {
+  Widget _buildCard(BuildContext context, isFollowed) {
     return Container(
       width: 300,
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -68,8 +86,8 @@ class _EventBigCardState extends State<EventBigCard> {
         child: Stack(
           children: [
             Image.network(
-              widget.event?.image != null && widget.event!.image!.isNotEmpty
-                  ? widget.event!.image!
+              event?.image != null && event!.image!.isNotEmpty
+                  ? event!.image!
                   : kDefaultImage,
               fit: BoxFit.cover,
               width: double.infinity,
@@ -92,13 +110,13 @@ class _EventBigCardState extends State<EventBigCard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      widget.event?.title ?? 'Event title',
+                      event?.title ?? 'Event title',
                       style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      formatDate(widget.event?.startDateTime ?? DateTime.now()), // Replace with your event time
+                      formatDate(event?.startDateTime ?? DateTime.now()), // Replace with your event time
                       style:  TextStyle(color: MyColors().primary,fontWeight: FontWeight.bold, fontSize: 14),
                     ),
                     const SizedBox(height: 4),
@@ -111,7 +129,7 @@ class _EventBigCardState extends State<EventBigCard> {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            widget.event?.locationName ?? 'location name', // Replace with your event location
+                            event?.locationName ?? 'location name', // Replace with your event location
                             style: const TextStyle(color: Colors.black, fontSize: 14),
                           ),
                           const SizedBox(width: 4),
@@ -125,7 +143,7 @@ class _EventBigCardState extends State<EventBigCard> {
                               child: Icon(
                                 isFollowed ? Icons.favorite : Icons.favorite_border,
                                 color: MyColors().primary,
-                                size: 16,
+                                size: 24,
                               ),
                             ),
                           ),

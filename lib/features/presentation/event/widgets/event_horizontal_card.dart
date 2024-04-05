@@ -1,25 +1,79 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ku_noti/core/constants/colors.dart';
+import 'package:ku_noti/core/constants/constants.dart';
+import 'package:ku_noti/features/data/event/models/follow_event_request.dart';
+import 'package:ku_noti/features/domain/event/entities/event.dart';
+import 'package:ku_noti/features/presentation/event/bloc/follow_event/follow_event_bloc.dart';
+import 'package:ku_noti/features/presentation/event/bloc/follow_event/follow_event_event.dart';
+import 'package:ku_noti/features/presentation/event/bloc/follow_event/follow_event_state.dart';
+import 'package:ku_noti/features/presentation/event/pages/event_detail_page.dart';
+import 'package:ku_noti/features/presentation/user/bloc/auth_bloc.dart';
 
 class EventHorizCard extends StatelessWidget {
-  final String imageUrl;
-  final String title;
-  final String date;
-  final String location;
-  final bool isFree;
-  final VoidCallback onLiked;
-  const EventHorizCard({
+  EventEntity? event;
+  EventHorizCard({
     super.key,
-    required this.imageUrl,
-    required this.title,
-    required this.date,
-    required this.location,
-    this.isFree = false,
-    required this.onLiked,
+    this.event
   });
+
+  // bool isFollowed = false;
+  void _navigateToCardDetailPage(BuildContext context) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => EventDetailPage(event: event),
+        )
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    return BlocListener<FollowEventBloc, FollowEventState>(
+      listener: (context, state) {
+        // Listen for specific state changes you want to react to
+        if (state is FollowEventError) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(state.errorMessage ?? 'Error occurred')));
+        }
+      },
+      child: BlocBuilder<FollowEventBloc, FollowEventState>(
+        builder: (context, state) {
+          bool? isFollowed = false;
+          if (state is FollowedEventsLoaded) {
+            isFollowed = state.followedEventIds?.contains(event?.id.toString());
+          }
+
+          // Build your widget based on the state
+          return GestureDetector(
+              onTap: () => _navigateToCardDetailPage(context),
+              child: _buildCard(context, isFollowed!) // Ensure _buildCard uses isFollowed to decide the icon
+          );
+        },
+      ),
+    );
+  }
+
+  void onTap(BuildContext context) {
+    final userId = context.read<AuthBloc>().state.user?.userId;
+    if (userId == null) return; // Handle not logged in user
+
+    final currentState = context.read<FollowEventBloc>().state;
+    if (currentState is FollowedEventsLoaded) {
+      final isCurrentlyFollowed = currentState.followedEventIds?.contains(event?.id.toString());
+      final followRequest = FollowRequest(userId: userId, eventId: event?.id);
+
+      if (isCurrentlyFollowed!) {
+        context.read<FollowEventBloc>().add(UnFollowEventPressed(followRequest));
+        context.read<FollowEventBloc>().add((LoadFollowedEvents(userId)));
+      } else {
+        context.read<FollowEventBloc>().add(FollowEventPressed(followRequest));
+        context.read<FollowEventBloc>().add((LoadFollowedEvents(userId)));
+      }
+    }
+  }
+
+  Widget _buildCard(BuildContext context, bool isFollowed) {
     return Card(
       color: Colors.white,
       shape: RoundedRectangleBorder(
@@ -32,7 +86,7 @@ class EventHorizCard extends StatelessWidget {
             child: ClipRRect(
               borderRadius: const BorderRadius.all(Radius.circular(15.0)),
               child: Image.network(
-                imageUrl,
+                event?.image ?? kDefaultImage,
                 fit: BoxFit.cover,
                 height: 120,
                 width: 120,
@@ -44,7 +98,7 @@ class EventHorizCard extends StatelessWidget {
             children: [
               const Text(
                 'National Music Festival', // Replace with your event title
-                style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),
+                style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
                 overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 8),
@@ -66,11 +120,17 @@ class EventHorizCard extends StatelessWidget {
                       style: TextStyle(color: Colors.black, fontSize: 14),
                     ),
                     const SizedBox(width: 20),
-                    Icon(
-                      Icons.favorite_border,
-                      color: MyColors().primary,
-                      size: 16,
+                    GestureDetector(
+                      onTap: () {
+                        onTap(context);
+                      },
+                      child: Icon(
+                        isFollowed ? Icons.favorite : Icons.favorite_border,
+                        color: MyColors().primary,
+                        size: 16,
+                      ),
                     ),
+                    // const SizedBox(width: 10),
                   ]
               ),
             ],

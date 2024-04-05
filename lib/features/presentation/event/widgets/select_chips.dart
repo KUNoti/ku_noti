@@ -46,7 +46,7 @@ class SelectChips extends StatelessWidget {
               },
               shape: StadiumBorder(
                 side: BorderSide(
-                  color: selectedChipIndex == index ? MyColors().primary : Colors.transparent,
+                  color: MyColors().primary,
                 ),
               ),
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

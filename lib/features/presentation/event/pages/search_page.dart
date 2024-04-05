@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ku_noti/core/constants/constants.dart';
 import 'package:ku_noti/features/presentation/event/widgets/event_horizontal_card.dart';
 import 'package:ku_noti/features/presentation/event/widgets/search_bar.dart';
 import 'package:ku_noti/features/presentation/event/widgets/select_chips.dart';
@@ -27,21 +26,13 @@ class _SearchPageState extends State<SearchPage> {
               SelectChips(
                 selectedChipIndex: selectedChipIndex,
                 onChipSelected: (String selectedLabel, int index) {
-                  print(selectedLabel);
                   setState(() {
                     selectedChipIndex = index;
                   });
                 }
               ),
               EventHorizCard(
-                imageUrl: kDefaultImage,
-                title: 'International Concert',
-                date: 'Sun, Dec 23 - 19.00 - 23.00 PM',
-                location: 'Grand Park, New York',
-                isFree: true,
-                onLiked: () {
-                  // Handle the like button tap
-                },
+
               )
             ],
           ),

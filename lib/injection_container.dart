@@ -8,6 +8,7 @@ import 'package:ku_noti/features/data/user/service/user_service.dart';
 import 'package:ku_noti/features/domain/event/repositories/event_repository.dart';
 import 'package:ku_noti/features/domain/event/usecases/follow_event_usecase.dart';
 import 'package:ku_noti/features/domain/event/usecases/get_events_usecase.dart';
+import 'package:ku_noti/features/domain/event/usecases/get_follow_event_usecase.dart';
 import 'package:ku_noti/features/domain/event/usecases/unfollow_event_usecase.dart';
 import 'package:ku_noti/features/domain/user/repositories/user_repository.dart';
 import 'package:ku_noti/features/domain/user/usecases/login_user_usercase.dart';
@@ -58,6 +59,10 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<UnFollowEventUseCase>(
     UnFollowEventUseCase(sl())
   );
+  
+  sl.registerSingleton<GetFollowEventUseCase>(
+    GetFollowEventUseCase(sl())
+  );
 
   // Bloc
   sl.registerFactory<AuthBloc>(
@@ -69,6 +74,6 @@ Future<void> initializeDependencies() async {
   );
 
   sl.registerFactory<FollowEventBloc>(
-      () => FollowEventBloc(sl(), sl())
+      () => FollowEventBloc(sl(), sl(), sl())
   );
 }

@@ -31,6 +31,11 @@ abstract class EventApiService {
   //     @Part(name: "tag") String tag,
   //     );
 
+  @GET('/api/event/follow_events')
+  Future<HttpResponse<List<EventModel>>> getFollowEvent(
+      @Field("user_id") int userId
+  );
+
   @POST('/api/event/follow')
   Future<HttpResponse<void>> followEvent(
     @Body() FollowRequest request
