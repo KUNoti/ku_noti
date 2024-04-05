@@ -18,3 +18,8 @@ class FilterByTagEvent extends EventsEvent {
   final String tag;
   const FilterByTagEvent(this.tag);
 }
+
+class SearchByKeyWordEvent extends EventsEvent {
+  final String keyword;
+  const SearchByKeyWordEvent(this.keyword);
+}
