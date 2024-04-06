@@ -2,10 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ku_noti/features/domain/user/entities/user.dart';
 import 'package:ku_noti/features/presentation/user/bloc/auth_bloc.dart';
+import 'package:ku_noti/features/presentation/user/bloc/auth_event.dart';
 import 'package:ku_noti/features/presentation/user/bloc/auth_state.dart';
+import 'package:ku_noti/features/presentation/user/pages/login_page.dart';
 
 class UserSettingsPage extends StatelessWidget {
   const UserSettingsPage({super.key});
+
+  void _logOut(BuildContext context) {
+
+    context.read<AuthBloc>().add(const LogOutEvent());
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (context) => LoginPage()),
+          (Route<dynamic> route) => false,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +26,6 @@ class UserSettingsPage extends StatelessWidget {
           builder: (context, state) {
             if (state is AuthDone && state.user != null) {
               UserEntity? user = state.user;
-              // print(user?.username);
               return Center(
                 child: Padding(
                   padding: const EdgeInsets.all(10),
@@ -27,7 +37,7 @@ class UserSettingsPage extends StatelessWidget {
                           children: [
                             _buildImage(user.imagePath),
                             const SizedBox(height: 16),
-                            _buildSetting(user),
+                            _buildSetting(context, user),
                           ],
                         )
                             : const Placeholder()
@@ -56,7 +66,7 @@ class UserSettingsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSetting(UserEntity? user) {
+  Widget _buildSetting(BuildContext context, UserEntity? user) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -99,7 +109,7 @@ class UserSettingsPage extends StatelessWidget {
           leading: const Icon(Icons.logout),
           title: const Text('Log Out'),
           onTap: () {
-            // Handle onTap action
+            _logOut(context);
           },
         ),
       ],

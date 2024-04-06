@@ -20,7 +20,7 @@ class AuthLoading extends AuthState {
 }
 
 class AuthDone extends AuthState {
-  const AuthDone(UserEntity userEntity): super(user: userEntity);
+  const AuthDone(UserEntity? userEntity): super(user: userEntity);
 }
 
 class AuthError extends AuthState {

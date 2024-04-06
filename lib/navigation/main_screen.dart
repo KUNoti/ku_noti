@@ -8,7 +8,10 @@ import 'package:ku_noti/features/presentation/event/bloc/follow_event/follow_eve
 import 'package:ku_noti/features/presentation/event/pages/favorites_page.dart';
 
 import 'package:ku_noti/features/presentation/event/pages/home_page.dart';
+import 'package:ku_noti/features/presentation/event/pages/my_event_page.dart';
 import 'package:ku_noti/features/presentation/user/bloc/auth_bloc.dart';
+import 'package:ku_noti/features/presentation/user/bloc/auth_state.dart';
+import 'package:ku_noti/features/presentation/user/pages/login_page.dart';
 import 'package:ku_noti/features/presentation/user/pages/user_setting_page.dart';
 import 'package:ku_noti/navigation/nav_bar.dart';
 import 'package:ku_noti/navigation/nav_model.dart';
@@ -25,7 +28,7 @@ class _MainScreenState extends State<MainScreen> {
   final searchNavKey = GlobalKey<NavigatorState>();
   final favoritesNavKey = GlobalKey<NavigatorState>();
   final profileNavKey = GlobalKey<NavigatorState>();
-  final testNavKey = GlobalKey<NavigatorState>();
+  final myEventNavKey = GlobalKey<NavigatorState>();
   int selectedTab = 0;
   List<NavModel> items = [];
 
@@ -50,8 +53,8 @@ class _MainScreenState extends State<MainScreen> {
         navKey: favoritesNavKey,
       ),
       NavModel(
-        page: const TabPage(tab: 4),
-        navKey: testNavKey,
+        page: const MyEventPage(),
+        navKey: myEventNavKey,
       ),
       NavModel(
         page: const UserSettingsPage(),
@@ -62,44 +65,42 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () {
-        if (items[selectedTab].navKey.currentState?.canPop() ?? false) {
-          items[selectedTab].navKey.currentState?.pop();
-          return Future.value(false);
-        } else {
-          return Future.value(true);
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) {
+        // Check the state and react accordingly
+        if (state is AuthDone && state.user == null) {
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => LoginPage()),
+                (Route<dynamic> route) => false,
+          );
         }
       },
-      child: Scaffold(
-        body: IndexedStack(
-          index: selectedTab,
-          children: items
-              .map((page) => Navigator(
-            key: page.navKey,
-            onGenerateInitialRoutes: (navigator, initialRoute) {
-              return [
-                MaterialPageRoute(builder: (context) => page.page)
-              ];
-            },
-          )).toList(),
-        ),
-
-        bottomNavigationBar: NavBar(
-          pageIndex: selectedTab,
-          onTap: (index) {
-            if (index == selectedTab) {
-              items[index]
-                  .navKey
-                  .currentState
-                  ?.popUntil((route) => route.isFirst);
-            } else {
-              setState(() {
-                selectedTab = index;
-              });
-            }
-          },
-        ),
+      child: BlocBuilder<AuthBloc, AuthState>(
+        builder: (context, state) {
+          return Scaffold(
+            body: IndexedStack(
+              index: selectedTab,
+              children: items.map((item) => Navigator(
+                key: item.navKey,
+                onGenerateInitialRoutes: (navigator, initialRoute) {
+                  return [MaterialPageRoute(builder: (context) => item.page)];
+                },
+              )).toList(),
+            ),
+            bottomNavigationBar: state.user != null ? NavBar(
+              pageIndex: selectedTab,
+              onTap: (index) {
+                setState(() {
+                  if (index == selectedTab) {
+                    items[index].navKey.currentState?.popUntil((route) => route.isFirst);
+                  } else {
+                    selectedTab = index;
+                  }
+                });
+              },
+            ) : null,
+          );
+        },
       ),
     );
   }

@@ -7,7 +7,7 @@ class CustomTextField extends StatefulWidget {
   final IconData? icon;
   final String hintText;
   final bool isPassword;
-  final StringValidator validator;
+  final StringValidator? validator;
 
   const CustomTextField({
     super.key,
@@ -15,7 +15,7 @@ class CustomTextField extends StatefulWidget {
     this.icon,
     required this.hintText,
     this.isPassword = false,
-    required this.validator,
+    this.validator,
   });
 
   @override

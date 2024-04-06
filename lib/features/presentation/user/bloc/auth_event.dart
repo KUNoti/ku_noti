@@ -25,3 +25,7 @@ class RegisterEvent extends AuthEvent {
     this.userModel
   );
 }
+
+class LogOutEvent extends AuthEvent {
+  const LogOutEvent();
+}
