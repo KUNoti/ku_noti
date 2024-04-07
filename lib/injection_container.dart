@@ -6,6 +6,7 @@ import 'package:ku_noti/features/data/event/service/event_api_service.dart';
 import 'package:ku_noti/features/data/user/repositories/user_repository_impl.dart';
 import 'package:ku_noti/features/data/user/service/user_service.dart';
 import 'package:ku_noti/features/domain/event/repositories/event_repository.dart';
+import 'package:ku_noti/features/domain/event/usecases/create_event_usecase.dart';
 import 'package:ku_noti/features/domain/event/usecases/follow_event_usecase.dart';
 import 'package:ku_noti/features/domain/event/usecases/get_events_usecase.dart';
 import 'package:ku_noti/features/domain/event/usecases/get_follow_event_usecase.dart';
@@ -52,6 +53,10 @@ Future<void> initializeDependencies() async {
     GetEventsUseCase(sl())
   );
 
+  sl.registerSingleton<CreateEventUseCase>(
+    CreateEventUseCase(sl())
+  );
+
   sl.registerSingleton<FollowEventUseCase>(
     FollowEventUseCase(sl())
   );
@@ -70,7 +75,7 @@ Future<void> initializeDependencies() async {
   );
   
   sl.registerFactory<EventsBloc>(
-      () => EventsBloc(sl())
+      () => EventsBloc(sl(), sl())
   );
 
   sl.registerFactory<FollowEventBloc>(

@@ -35,41 +35,41 @@ class EventRepositoryImpl implements EventRepository {
     }
   }
 
-  // @override
-  // Future<DataState<void>> createEvent(EventEntity event) async {
-  //   try {
-  //     EventModel eventModel = EventModel.fromEntity(event);
-  //     final httpResponse = await _eventApiService.createEvent(
-  //         eventModel.title!,
-  //         eventModel.latitude!,
-  //         eventModel.longitude!,
-  //         "${eventModel.startDateTime!.toIso8601String()}Z",
-  //         "${eventModel.endDateTime!.toIso8601String()}Z",
-  //         eventModel.price!,
-  //         eventModel.creator!,
-  //         eventModel.detail!,
-  //         eventModel.locationName!,
-  //         eventModel.needRegis!,
-  //         eventModel.imageFile!,
-  //         eventModel.tag!
-  //     );
-  //
-  //     if(httpResponse.response.statusCode == HttpStatus.ok) {
-  //       return const DataSuccess<void>(null);
-  //     } else {
-  //       return DataFailed(
-  //           DioException(
-  //               error: httpResponse.response.statusMessage,
-  //               response: httpResponse.response,
-  //               type: DioExceptionType.badResponse,
-  //               requestOptions: httpResponse.response.requestOptions
-  //           )
-  //       );
-  //     }
-  //   } on DioException catch(e) {
-  //     return DataFailed(e);
-  //   }
-  // }
+  @override
+  Future<DataState<void>> createEvent(EventEntity event) async {
+    try {
+      EventModel eventModel = EventModel.fromEntity(event);
+      final httpResponse = await _eventApiService.createEvent(
+          eventModel.title!,
+          eventModel.latitude!,
+          eventModel.longitude!,
+          "${eventModel.startDateTime!.toIso8601String()}Z",
+          "${eventModel.endDateTime!.toIso8601String()}Z",
+          eventModel.price!,
+          eventModel.creator!,
+          eventModel.detail!,
+          eventModel.locationName!,
+          eventModel.needRegis!,
+          eventModel.imageFile!,
+          eventModel.tag!
+      );
+
+      if(httpResponse.response.statusCode == HttpStatus.ok) {
+        return const DataSuccess<void>(null);
+      } else {
+        return DataFailed(
+            DioException(
+                error: httpResponse.response.statusMessage,
+                response: httpResponse.response,
+                type: DioExceptionType.badResponse,
+                requestOptions: httpResponse.response.requestOptions
+            )
+        );
+      }
+    } on DioException catch(e) {
+      return DataFailed(e);
+    }
+  }
 
   @override
   Future<DataState<void>> followEvent(FollowRequest request) async {

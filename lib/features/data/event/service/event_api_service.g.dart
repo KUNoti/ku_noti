@@ -51,6 +51,98 @@ class _EventApiService implements EventApiService {
   }
 
   @override
+  Future<HttpResponse<void>> createEvent(
+    String title,
+    num latitude,
+    num longitude,
+    String stateDate,
+    String endDate,
+    num price,
+    int creator,
+    String detail,
+    String locationName,
+    bool needRegis,
+    File imageFile,
+    String tag,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = FormData();
+    _data.fields.add(MapEntry(
+      'title',
+      title,
+    ));
+    _data.fields.add(MapEntry(
+      'latitude',
+      latitude.toString(),
+    ));
+    _data.fields.add(MapEntry(
+      'longitude',
+      longitude.toString(),
+    ));
+    _data.fields.add(MapEntry(
+      'start_date_time',
+      stateDate,
+    ));
+    _data.fields.add(MapEntry(
+      'end_date_time',
+      endDate,
+    ));
+    _data.fields.add(MapEntry(
+      'price',
+      price.toString(),
+    ));
+    _data.fields.add(MapEntry(
+      'creator',
+      creator.toString(),
+    ));
+    _data.fields.add(MapEntry(
+      'detail',
+      detail,
+    ));
+    _data.fields.add(MapEntry(
+      'location_name',
+      locationName,
+    ));
+    _data.fields.add(MapEntry(
+      'need_regis',
+      needRegis.toString(),
+    ));
+    _data.files.add(MapEntry(
+      'image_file',
+      MultipartFile.fromFileSync(
+        imageFile.path,
+        filename: imageFile.path.split(Platform.pathSeparator).last,
+      ),
+    ));
+    _data.fields.add(MapEntry(
+      'tag',
+      tag,
+    ));
+    final _result =
+        await _dio.fetch<void>(_setStreamType<HttpResponse<void>>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+      contentType: 'multipart/form-data',
+    )
+            .compose(
+              _dio.options,
+              '/api/event/create',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final httpResponse = HttpResponse(null, _result);
+    return httpResponse;
+  }
+
+  @override
   Future<HttpResponse<List<EventModel>>> getFollowEvent(int userId) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
