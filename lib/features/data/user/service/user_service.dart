@@ -23,7 +23,7 @@ abstract class UserService {
       @Part(name: "password") String? password,
       @Part(name: "name") String? name,
       @Part(name: "email") String? email,
-      @Part(name: "profile_file") File? imageFile,
+      @Part(name: "profile_file") File imageFile,
       @Part(name: "token") String? token,
     );
 }
