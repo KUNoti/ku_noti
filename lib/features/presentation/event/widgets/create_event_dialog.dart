@@ -378,7 +378,7 @@ class CreateEventDialogState extends State<CreateEventDialog> {
 
   void showPlacePicker() async {
     LocationResult? result = await Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => PlacePicker("AIzaSyBF7ArXeeD6X1h1MBj6ggjY_scz6qCz7qg")));
+        MaterialPageRoute(builder: (context) => PlacePicker("")));
 
     _locationNameController.text = result?.name ?? "name";
     lat = result?.latLng?.latitude ?? 13.8476;
