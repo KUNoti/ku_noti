@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ku_noti/config/theme/app_themes.dart';
+import 'package:ku_noti/features/data/notification/service/firebase_service.dart';
 import 'package:ku_noti/features/presentation/event/bloc/event/events_bloc.dart';
 import 'package:ku_noti/features/presentation/event/bloc/follow_event/follow_event_bloc.dart';
 import 'package:ku_noti/features/presentation/event/bloc/user_event/user_event_bloc.dart';
@@ -16,11 +19,15 @@ Future<void> main() async{
   WidgetsFlutterBinding.ensureInitialized();
 
   // FireBase
-  // if (Firebase.apps.isEmpty) {
-  //   await Firebase.initializeApp(
-  //     options: DefaultFirebaseOptions.currentPlatform,
-  //   );
-  // }
+  if (Firebase.apps.isEmpty) {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }
+
+  if (Platform.isAndroid) {
+    await FirebaseService().initNotifications();
+  }
 
   await initializeDependencies();
   runApp(const MyApp());

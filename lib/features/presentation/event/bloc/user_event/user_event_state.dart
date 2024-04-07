@@ -29,3 +29,13 @@ class UserEventsSuccess extends UserEventsState {
 class UserEventsError extends UserEventsState {
   const UserEventsError(String errorMessage) : super(errorMessage: errorMessage);
 }
+
+class LoadTagSuccess extends UserEventsState {
+  final List<String> tags;
+  const LoadTagSuccess(this.tags);
+}
+
+class FollowTagSuccess extends UserEventsState {
+  final String message;
+  const FollowTagSuccess(this.message);
+}

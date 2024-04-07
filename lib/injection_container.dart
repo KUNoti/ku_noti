@@ -3,15 +3,19 @@ import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:ku_noti/features/data/event/repositories/event_repository_impl.dart';
 import 'package:ku_noti/features/data/event/service/event_api_service.dart';
+import 'package:ku_noti/features/data/notification/service/firebase_service.dart';
 import 'package:ku_noti/features/data/user/repositories/user_repository_impl.dart';
 import 'package:ku_noti/features/data/user/service/user_service.dart';
 import 'package:ku_noti/features/domain/event/repositories/event_repository.dart';
 import 'package:ku_noti/features/domain/event/usecases/create_event_usecase.dart';
 import 'package:ku_noti/features/domain/event/usecases/follow_event_usecase.dart';
+import 'package:ku_noti/features/domain/event/usecases/follow_tag_usecase.dart';
 import 'package:ku_noti/features/domain/event/usecases/get_create_by_me_usecase.dart';
 import 'package:ku_noti/features/domain/event/usecases/get_events_usecase.dart';
 import 'package:ku_noti/features/domain/event/usecases/get_follow_event_usecase.dart';
+import 'package:ku_noti/features/domain/event/usecases/get_tag_usecase.dart';
 import 'package:ku_noti/features/domain/event/usecases/unfollow_event_usecase.dart';
+import 'package:ku_noti/features/domain/event/usecases/unfollow_tag_usecase.dart';
 import 'package:ku_noti/features/domain/user/repositories/user_repository.dart';
 import 'package:ku_noti/features/domain/user/usecases/login_user_usercase.dart';
 import 'package:ku_noti/features/domain/user/usecases/register_user_usecase.dart';
@@ -29,6 +33,7 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<Dio>(Dio());
 
   // FireBase
+  sl.registerSingleton<FirebaseService>(FirebaseService());
 
   // Dependencies
   sl.registerSingleton<UserService>(UserService(sl()));
@@ -75,6 +80,18 @@ Future<void> initializeDependencies() async {
       GetCreateByMeUseCase(sl())
   );
 
+  sl.registerSingleton<GetTagUseCase>(
+      GetTagUseCase(sl())
+  );
+
+  sl.registerSingleton<FollowTagUseCase>(
+      FollowTagUseCase(sl())
+  );
+
+  sl.registerSingleton<UnFollowTagUseCase>(
+      UnFollowTagUseCase(sl())
+  );
+
   // Bloc
   sl.registerFactory<AuthBloc>(
       () => AuthBloc(sl(), sl())
@@ -89,6 +106,6 @@ Future<void> initializeDependencies() async {
   );
 
   sl.registerFactory<UserEventBloc>(
-      () => UserEventBloc(sl())
+      () => UserEventBloc(sl(), sl(), sl(), sl())
   );
 }
