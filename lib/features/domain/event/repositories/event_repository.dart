@@ -11,4 +11,5 @@ abstract class EventRepository {
   Future<DataState<void>> followEvent(FollowRequest request);
   Future<DataState<void>> unFollowEvent(FollowRequest request);
 
+  Future<DataState<List<EventEntity>>> getCreateByMe(int userId);
 }

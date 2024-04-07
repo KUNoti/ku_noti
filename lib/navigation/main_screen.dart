@@ -5,6 +5,8 @@ import 'package:ku_noti/features/presentation/event/bloc/event/events_bloc.dart'
 import 'package:ku_noti/features/presentation/event/bloc/event/event_event.dart';
 import 'package:ku_noti/features/presentation/event/bloc/follow_event/follow_event_bloc.dart';
 import 'package:ku_noti/features/presentation/event/bloc/follow_event/follow_event_event.dart';
+import 'package:ku_noti/features/presentation/event/bloc/user_event/user_event_bloc.dart';
+import 'package:ku_noti/features/presentation/event/bloc/user_event/user_event_event.dart';
 import 'package:ku_noti/features/presentation/event/pages/explore_event_page.dart';
 import 'package:ku_noti/features/presentation/event/pages/favorites_page.dart';
 
@@ -40,6 +42,7 @@ class _MainScreenState extends State<MainScreen> {
     final userId = context.read<AuthBloc>().state.user?.userId;
     BlocProvider.of<EventsBloc>(context).add(const GetEvents());
     BlocProvider.of<FollowEventBloc>(context).add(LoadFollowedEvents(userId));
+    BlocProvider.of<UserEventBloc>(context).add(LoadUserEventsEvent(userId));
     items = [
       NavModel(
         page: const HomePage(),

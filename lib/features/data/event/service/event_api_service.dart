@@ -47,4 +47,9 @@ abstract class EventApiService {
   Future<HttpResponse<void>> unFollowEvent(
     @Body() FollowRequest request
   );
+  
+  @GET('/api/event/created_by_me')
+  Future<HttpResponse<List<EventModel>>> getCreateByMe(
+    @Field("user_id") int userId
+  );
 }

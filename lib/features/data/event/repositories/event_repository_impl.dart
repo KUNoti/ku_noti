@@ -133,4 +133,25 @@ class EventRepositoryImpl implements EventRepository {
       return DataFailed(e);
     }
   }
+
+  @override
+  Future<DataState<List<EventEntity>>> getCreateByMe(int userId) async{
+    try {
+      final httpResponse = await _eventApiService.getCreateByMe(userId);
+      if(httpResponse.response.statusCode == HttpStatus.ok) {
+        return  DataSuccess<List<EventModel>>(httpResponse.data);
+      } else {
+        return DataFailed(
+            DioException(
+                error: httpResponse.response.statusMessage,
+                response: httpResponse.response,
+                type: DioExceptionType.badResponse,
+                requestOptions: httpResponse.response.requestOptions
+            )
+        );
+      }
+    } on DioException catch(e) {
+      return DataFailed(e);
+    }
+  }
 }
