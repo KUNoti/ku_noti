@@ -36,13 +36,13 @@ jobs:
     - run: flutter build apk
     - run: flutter build appbundle
 
-  # test:
-  #   name: Run Tests
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: subosito/flutter-action@v2
-  #       with:
-  #         channel: 'stable'
-  #     - run: flutter pub get
-  #     - run: flutter test
+  test:
+     name: Run Tests
+     runs-on: ubuntu-latest
+     steps:
+       - uses: actions/checkout@v4
+       - uses: subosito/flutter-action@v2
+         with:
+           channel: 'stable'
+       - run: flutter pub get
+       - run: flutter test

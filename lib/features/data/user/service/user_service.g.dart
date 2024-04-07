@@ -56,7 +56,7 @@ class _UserService implements UserService {
     String? password,
     String? name,
     String? email,
-    File? imageFile,
+    File imageFile,
     String? token,
   ) async {
     final _extra = <String, dynamic>{};
@@ -91,7 +91,7 @@ class _UserService implements UserService {
     _data.files.add(MapEntry(
       'profile_file',
       MultipartFile.fromFileSync(
-        imageFile!.path,
+        imageFile.path,
         filename: imageFile.path.split(Platform.pathSeparator).last,
       ),
     ));

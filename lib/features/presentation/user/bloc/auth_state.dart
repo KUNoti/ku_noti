@@ -8,7 +8,7 @@ abstract class AuthState extends Equatable {
   const AuthState({this.user, this.exception});
 
   @override
-  List<Object> get props => [user!, exception!];
+  List<Object?> get props => [user, exception];
 }
 
 class AuthInit extends AuthState {
