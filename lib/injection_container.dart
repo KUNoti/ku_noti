@@ -6,7 +6,9 @@ import 'package:ku_noti/features/data/event/service/event_api_service.dart';
 import 'package:ku_noti/features/data/user/repositories/user_repository_impl.dart';
 import 'package:ku_noti/features/data/user/service/user_service.dart';
 import 'package:ku_noti/features/domain/event/repositories/event_repository.dart';
+import 'package:ku_noti/features/domain/event/usecases/create_event_usecase.dart';
 import 'package:ku_noti/features/domain/event/usecases/follow_event_usecase.dart';
+import 'package:ku_noti/features/domain/event/usecases/get_create_by_me_usecase.dart';
 import 'package:ku_noti/features/domain/event/usecases/get_events_usecase.dart';
 import 'package:ku_noti/features/domain/event/usecases/get_follow_event_usecase.dart';
 import 'package:ku_noti/features/domain/event/usecases/unfollow_event_usecase.dart';
@@ -15,6 +17,7 @@ import 'package:ku_noti/features/domain/user/usecases/login_user_usercase.dart';
 import 'package:ku_noti/features/domain/user/usecases/register_user_usecase.dart';
 import 'package:ku_noti/features/presentation/event/bloc/event/events_bloc.dart';
 import 'package:ku_noti/features/presentation/event/bloc/follow_event/follow_event_bloc.dart';
+import 'package:ku_noti/features/presentation/event/bloc/user_event/user_event_bloc.dart';
 import 'package:ku_noti/features/presentation/user/bloc/auth_bloc.dart';
 
 
@@ -52,6 +55,10 @@ Future<void> initializeDependencies() async {
     GetEventsUseCase(sl())
   );
 
+  sl.registerSingleton<CreateEventUseCase>(
+    CreateEventUseCase(sl())
+  );
+
   sl.registerSingleton<FollowEventUseCase>(
     FollowEventUseCase(sl())
   );
@@ -64,16 +71,24 @@ Future<void> initializeDependencies() async {
     GetFollowEventUseCase(sl())
   );
 
+  sl.registerSingleton<GetCreateByMeUseCase>(
+      GetCreateByMeUseCase(sl())
+  );
+
   // Bloc
   sl.registerFactory<AuthBloc>(
       () => AuthBloc(sl(), sl())
   );
   
   sl.registerFactory<EventsBloc>(
-      () => EventsBloc(sl())
+      () => EventsBloc(sl(), sl())
   );
 
   sl.registerFactory<FollowEventBloc>(
       () => FollowEventBloc(sl(), sl(), sl())
+  );
+
+  sl.registerFactory<UserEventBloc>(
+      () => UserEventBloc(sl())
   );
 }

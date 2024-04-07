@@ -6,6 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ku_noti/core/constants/colors.dart';
 import 'package:ku_noti/features/domain/event/entities/event.dart';
+import 'package:ku_noti/features/presentation/event/bloc/event/event_event.dart';
+import 'package:ku_noti/features/presentation/event/bloc/event/events_bloc.dart';
 import 'package:ku_noti/features/presentation/event/widgets/select_chips.dart';
 import 'package:ku_noti/features/presentation/place_picker/entities/location_result.dart';
 import 'package:ku_noti/features/presentation/place_picker/place_picker.dart';
@@ -45,10 +47,8 @@ class CreateEventDialogState extends State<CreateEventDialog> {
   final ImagePicker _picker = ImagePicker();
 
   void createEvents(BuildContext context) {
-    final AuthBloc remoteAuthBloc = BlocProvider.of<AuthBloc>(context);
-
-    final user = remoteAuthBloc.state.user;
-
+    final AuthBloc authBloc = BlocProvider.of<AuthBloc>(context);
+    final user = authBloc.state.user;
     if(user != null) {
       EventEntity event = EventEntity(
           title: _titleController.text,
@@ -62,10 +62,10 @@ class CreateEventDialogState extends State<CreateEventDialog> {
           detail: _detailController.text,
           locationName: _locationNameController.text,
           needRegis: false,
-          tag: "KU"
+          tag: selectedTag
       );
-      // BlocProvider.of<EventsBloc>(context).add(CreateEvent(event));
-      // BlocProvider.of<RemoteEventsBloc>(context).add(const GetEvents());
+      BlocProvider.of<EventsBloc>(context).add(CreateEvent(event));
+      BlocProvider.of<EventsBloc>(context).add(const GetEvents());
     }
     Navigator.of(context).pop();
   }

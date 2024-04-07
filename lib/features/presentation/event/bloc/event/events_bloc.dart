@@ -1,8 +1,11 @@
 
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ku_noti/core/resources/data_state.dart';
 import 'package:ku_noti/features/domain/event/entities/event.dart';
+import 'package:ku_noti/features/domain/event/usecases/create_event_usecase.dart';
 import 'package:ku_noti/features/domain/event/usecases/get_events_usecase.dart';
 import 'package:ku_noti/features/presentation/event/bloc/event/event_event.dart';
 import 'package:ku_noti/features/presentation/event/bloc/event/event_state.dart';
@@ -10,18 +13,21 @@ import 'package:ku_noti/features/presentation/event/bloc/event/event_state.dart'
 
 class EventsBloc extends Bloc<EventsEvent, EventsState> {
   final GetEventsUseCase _getEventUseCase;
+  final CreateEventUseCase _createEventUseCase;
 
   EventsBloc(
       this._getEventUseCase,
-      ) : super(const EventsLoading()
+      this._createEventUseCase
+      ) : super(const EventsInitail()
   ) {
-    on <GetEvents> (onGetEvents);
+    on <GetEvents> (_onGetEvents);
+    on <CreateEvent> (_onCreateEvent);
     on <FilterByTagEvent> (_onFilterByTag);
-    // on <CreateEvent> (onCreateEvent);
     on <SearchByKeyWordEvent> (_onSearchByKeyWordEvent);
   }
 
-  void onGetEvents(GetEvents event, Emitter<EventsState> emit) async {
+  void _onGetEvents(GetEvents event, Emitter<EventsState> emit) async {
+    emit(const EventsLoading());
     try {
       final dataState = await _getEventUseCase();
 
@@ -39,6 +45,32 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
     } catch (e) {
       if (kDebugMode) {
         print("failed to get event $e");
+      }
+    }
+  }
+
+  void _onCreateEvent(CreateEvent event, Emitter<EventsState> emit) async {
+    emit(const EventsLoading());
+    try {
+      final dataState = await _createEventUseCase(params: event.eventEntity);
+
+      if (dataState is DataSuccess) {
+
+        final getEventsState = await _getEventUseCase();
+        if (getEventsState is DataSuccess && getEventsState.data!.isNotEmpty) {
+          emit(EventSuccess(getEventsState.data!));
+        }
+
+        emit(const EventSuccess([]));
+      }
+
+      if (dataState is DataFailed) {
+        emit(const EventsError("failed to create event"));
+      }
+
+    } catch (e) {
+      if (kDebugMode) {
+        print("failed to create event $e");
       }
     }
   }

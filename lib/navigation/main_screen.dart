@@ -5,6 +5,9 @@ import 'package:ku_noti/features/presentation/event/bloc/event/events_bloc.dart'
 import 'package:ku_noti/features/presentation/event/bloc/event/event_event.dart';
 import 'package:ku_noti/features/presentation/event/bloc/follow_event/follow_event_bloc.dart';
 import 'package:ku_noti/features/presentation/event/bloc/follow_event/follow_event_event.dart';
+import 'package:ku_noti/features/presentation/event/bloc/user_event/user_event_bloc.dart';
+import 'package:ku_noti/features/presentation/event/bloc/user_event/user_event_event.dart';
+import 'package:ku_noti/features/presentation/event/pages/explore_event_page.dart';
 import 'package:ku_noti/features/presentation/event/pages/favorites_page.dart';
 
 import 'package:ku_noti/features/presentation/event/pages/home_page.dart';
@@ -25,7 +28,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   final homeNavKey = GlobalKey<NavigatorState>();
-  final searchNavKey = GlobalKey<NavigatorState>();
+  final exploreNavKey = GlobalKey<NavigatorState>();
   final favoritesNavKey = GlobalKey<NavigatorState>();
   final profileNavKey = GlobalKey<NavigatorState>();
   final myEventNavKey = GlobalKey<NavigatorState>();
@@ -39,14 +42,15 @@ class _MainScreenState extends State<MainScreen> {
     final userId = context.read<AuthBloc>().state.user?.userId;
     BlocProvider.of<EventsBloc>(context).add(const GetEvents());
     BlocProvider.of<FollowEventBloc>(context).add(LoadFollowedEvents(userId));
+    BlocProvider.of<UserEventBloc>(context).add(LoadUserEventsEvent(userId));
     items = [
       NavModel(
         page: const HomePage(),
         navKey: homeNavKey,
       ),
       NavModel(
-        page: const TabPage(tab: 2),
-        navKey: searchNavKey,
+        page: const ExplorePage(),
+        navKey: exploreNavKey,
       ),
       NavModel(
         page: const FavoritesPage(),
