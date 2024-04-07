@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ku_noti/config/theme/app_themes.dart';
@@ -7,9 +8,19 @@ import 'package:ku_noti/features/presentation/user/bloc/auth_bloc.dart';
 import 'package:ku_noti/features/presentation/user/pages/login_page.dart';
 import 'package:ku_noti/injection_container.dart';
 
+import 'firebase_options.dart';
+
 Future<void> main() async{
 
   WidgetsFlutterBinding.ensureInitialized();
+
+  // FireBase
+  // if (Firebase.apps.isEmpty) {
+  //   await Firebase.initializeApp(
+  //     options: DefaultFirebaseOptions.currentPlatform,
+  //   );
+  // }
+
   await initializeDependencies();
   runApp(const MyApp());
 }
