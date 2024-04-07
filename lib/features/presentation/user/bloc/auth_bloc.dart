@@ -16,11 +16,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   // final FirebaseApi _firebaseApi;
 
   AuthBloc(this._loginUserUseCase, this._registerUserUseCase) : super(const AuthInit()) {
-    on <LoginEvents> (onLoginEvents);
-    on <RegisterEvent> (onRegisterEvents);
+    on <LoginEvents> (_onLoginEvents);
+    on <RegisterEvent> (_onRegisterEvents);
+    on <LogOutEvent> (_onLogOutEvent);
   }
 
-  void onLoginEvents(LoginEvents event, Emitter<AuthState> emit) async {
+  void _onLoginEvents(LoginEvents event, Emitter<AuthState> emit) async {
     emit(const AuthLoading());
     try {
       final dataState = await _loginUserUseCase(params: event.toLoginRequest());
@@ -41,7 +42,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
-  void onRegisterEvents(RegisterEvent event, Emitter<AuthState> emit) async {
+  void _onRegisterEvents(RegisterEvent event, Emitter<AuthState> emit) async {
     // emit(const AuthLoading());
     try {
       // event.userModel.token = _firebaseApi.token;
@@ -61,5 +62,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         print("failed to register $e");
       }
     }
+  }
+
+  void _onLogOutEvent(LogOutEvent event, Emitter<AuthState> emit) async {
+    emit(
+        const AuthDone(null)
+    );
   }
 }
