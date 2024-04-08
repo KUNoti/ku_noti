@@ -10,15 +10,6 @@ class EventDetailPage extends StatelessWidget {
     this.event
   });
 
-  // void _launchMapsUrl(num lat, num lon) async {
-  //   final Uri url = Uri.parse('https://www.google.com/maps/search/?api=1&query=$lat,$lon');
-  //   if (await canLaunchUrl(url)) {
-  //     await launchUrl(url);
-  //   } else {
-  //     throw 'Could not launch $url';
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(

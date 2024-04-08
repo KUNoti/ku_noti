@@ -13,7 +13,7 @@ class _EventApiService implements EventApiService {
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= 'http://localhost:8000';
+    baseUrl ??= 'http://192.168.1.102:8000';
   }
 
   final Dio _dio;

@@ -20,8 +20,8 @@ class MyEventPage extends StatefulWidget {
 }
 
 class _MyEventPageState extends State<MyEventPage> {
-  final List<String> chipLabels = ['KU', 'Music', 'Art', 'Workshop'];
-  final List<IconData> chipIcons = [Icons.school, Icons.music_note, Icons.brush, Icons.build];
+  final List<String> chipLabels = ['KU', 'Music', 'Art', 'Workshop', 'Food'];
+  final List<IconData> chipIcons = [Icons.school, Icons.music_note, Icons.brush, Icons.build, Icons.food_bank];
   Set<int> selectedTagIndices = {};
   String? token;
   @override
@@ -55,6 +55,7 @@ class _MyEventPageState extends State<MyEventPage> {
                 setState(() {
                   selectedTagIndices = Set.from(state.tags.map((tag) => chipLabels.indexOf(tag)).where((index) => index != -1));
                 });
+                // add load
               }
               else if (state is FollowTagSuccess) {
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));

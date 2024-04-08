@@ -10,7 +10,7 @@ import 'package:ku_noti/features/data/event/models/follow_tag_request.dart';
 import 'package:retrofit/retrofit.dart';
 part 'event_api_service.g.dart';
 
-@RestApi(baseUrl: APIBaseIOSURL)
+@RestApi(baseUrl: localURL)
 abstract class EventApiService {
   factory EventApiService(Dio dio) = _EventApiService;
 

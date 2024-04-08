@@ -4,8 +4,8 @@ import 'package:ku_noti/core/constants/colors.dart';
 typedef ChipSelectedCallback = void Function(String selectedLabel, int index);
 
 class SelectChips extends StatelessWidget {
-  final List<String> chipLabels = ['All', 'KU','', 'Sport','Art', 'Workshop'];
-  final List<IconData> chipIcons = [Icons.all_inclusive,Icons.school, Icons.music_note, Icons.sports_basketball, Icons.brush, Icons.build];
+  final List<String> chipLabels = ['All', 'KU','Music', 'Sport', 'Art', 'Workshop', "Food"];
+  final List<IconData> chipIcons = [Icons.all_inclusive,Icons.school, Icons.music_note, Icons.sports_basketball, Icons.brush, Icons.build, Icons.food_bank];
   final ChipSelectedCallback onChipSelected;
   final int selectedChipIndex;
 
