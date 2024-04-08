@@ -14,8 +14,7 @@ abstract class EventCardBase extends StatelessWidget {
   const EventCardBase({super.key, this.event});
 
   void navigateToCardDetailPage(BuildContext context) {
-    Navigator.push(
-      context,
+    Navigator.of(context, rootNavigator: true).push(
       MaterialPageRoute(builder: (context) => EventDetailPage(event: event)),
     );
   }

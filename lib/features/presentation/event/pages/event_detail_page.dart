@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:ku_noti/core/constants/colors.dart';
 import 'package:ku_noti/core/constants/constants.dart';
 import 'package:ku_noti/features/domain/event/entities/event.dart';
-import 'package:ku_noti/features/presentation/user/widgets/custom_button.dart';
 
 class EventDetailPage extends StatelessWidget {
   final EventEntity? event;
@@ -11,11 +10,20 @@ class EventDetailPage extends StatelessWidget {
     this.event
   });
 
+  // void _launchMapsUrl(num lat, num lon) async {
+  //   final Uri url = Uri.parse('https://www.google.com/maps/search/?api=1&query=$lat,$lon');
+  //   if (await canLaunchUrl(url)) {
+  //     await launchUrl(url);
+  //   } else {
+  //     throw 'Could not launch $url';
+  //   }
+  // }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        bottomNavigationBar: _buildBottomButton(context),
+        // bottomNavigationBar: _buildBottomButton(context),
         body: SingleChildScrollView(
           child: Column(
             children: [
@@ -186,7 +194,7 @@ class EventDetailPage extends StatelessWidget {
 
               TextButton(
                 onPressed: () {
-                  // TODO: Implement the navigation to maps
+                  // _launchMapsUrl(event!.latitude!, event!.longitude!);
                 },
                 style: TextButton.styleFrom(
                   foregroundColor: Colors.white,
@@ -203,26 +211,26 @@ class EventDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildBottomButton(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      child: Row(
-        children: [
-          CustomButton(
-            buttonText: 'Register',
-            onPressed: () {},
-            backColor: Colors.deepPurpleAccent[50],
-            foreColor: MyColors().primary,
-          ),
-          const Spacer(),
-          CustomButton(
-              buttonText: 'Navigate',
-              onPressed: () {},
-            backColor: Colors.deepPurpleAccent,
-            foreColor: Colors.white,
-          )
-        ],
-      ),
-    );
-  }
+  // Widget _buildBottomButton(BuildContext context) {
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+  //     child: Row(
+  //       children: [
+  //         CustomButton(
+  //           buttonText: 'Register',
+  //           onPressed: () {},
+  //           backColor: Colors.deepPurpleAccent[50],
+  //           foreColor: MyColors().primary,
+  //         ),
+  //         const Spacer(),
+  //         CustomButton(
+  //             buttonText: 'Navigate',
+  //             onPressed: () {},
+  //           backColor: Colors.deepPurpleAccent,
+  //           foreColor: Colors.white,
+  //         )
+  //       ],
+  //     ),
+  //   );
+  // }
 }

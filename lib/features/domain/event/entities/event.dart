@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:equatable/equatable.dart';
 
+
 class EventEntity extends Equatable {
   final int ? id;
   final String ? title;
@@ -18,6 +19,8 @@ class EventEntity extends Equatable {
   final String ? tag;
   final String ? locationName;
   final bool ? needRegis;
+  final int ? regisAmount;
+  final int ? regisMax;
 
   const EventEntity({
     this.id,
@@ -33,7 +36,9 @@ class EventEntity extends Equatable {
     this.detail,
     this.tag,
     this.locationName,
-    this.needRegis
+    this.needRegis,
+    this.regisAmount,
+    this.regisMax
   });
 
   @override
@@ -53,6 +58,8 @@ class EventEntity extends Equatable {
       tag,
       locationName,
       needRegis,
+      regisAmount,
+      regisMax,
     ];
   }
 }

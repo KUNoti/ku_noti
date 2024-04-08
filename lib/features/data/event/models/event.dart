@@ -2,6 +2,7 @@
 import 'package:ku_noti/core/constants/constants.dart';
 import 'package:ku_noti/features/domain/event/entities/event.dart';
 
+
 class EventModel extends EventEntity {
   const EventModel({
     super.id,
@@ -18,6 +19,8 @@ class EventModel extends EventEntity {
     super.tag,
     super.locationName,
     super.needRegis,
+    super.regisAmount,
+    super.regisMax
   });
 
   factory EventModel.fromJson(Map<String, dynamic> map){
@@ -34,7 +37,9 @@ class EventModel extends EventEntity {
         detail: map['detail'] ?? "",
         locationName: map['location_name'] ?? "",
         needRegis: map['need_regis'] ?? false,
-        tag: map['tag'] ?? ""
+        tag: map['tag'] ?? "",
+        regisAmount: map['regis_amount'] ?? 0,
+        regisMax: map['regis_max'] ?? 0
     );
   }
 
@@ -51,7 +56,8 @@ class EventModel extends EventEntity {
       "location_name": locationName,
       "need_regis": needRegis,
       "image_file": imageFile,
-      "tag": tag
+      "tag": tag,
+      "regis_max": regisMax,
     };
   }
 

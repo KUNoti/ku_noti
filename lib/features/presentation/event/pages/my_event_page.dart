@@ -162,7 +162,6 @@ class _MyEventPageState extends State<MyEventPage> {
           selectedChipIndices: selectedTagIndices,
           onChipSelected: (String tag, bool isSelected, int index) {
             setState(() {
-              print(isSelected);
               _handleTagSelection(tag, isSelected, index);
             });
           },
