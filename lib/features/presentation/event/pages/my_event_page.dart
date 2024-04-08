@@ -10,6 +10,7 @@ import 'package:ku_noti/features/presentation/event/bloc/user_event/user_event_s
 import 'package:ku_noti/features/presentation/event/widgets/create_event_dialog.dart';
 import 'package:ku_noti/features/presentation/event/widgets/event_horizontal_card.dart';
 import 'package:ku_noti/features/presentation/event/widgets/select_tag_follow.dart';
+import 'package:ku_noti/features/presentation/user/bloc/auth_bloc.dart';
 import 'package:ku_noti/injection_container.dart';
 
 class MyEventPage extends StatefulWidget {
@@ -28,7 +29,9 @@ class _MyEventPageState extends State<MyEventPage> {
   initState()  {
     super.initState();
     fetchInitialData();
+    final user = context.read<AuthBloc>().state.user;
     BlocProvider.of<UserEventBloc>(context).add(LoadTag(token));
+    BlocProvider.of<UserEventBloc>(context).add(LoadUserEventsEvent(user?.userId));
   }
 
 
@@ -123,7 +126,9 @@ class _MyEventPageState extends State<MyEventPage> {
             const SizedBox(height: 20), // Add some space
             const Text("Create by me", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             const SizedBox(height: 10), // Add some space
-            _buildEventList(state) // This will now work without needing to be in an Expanded widget
+            _buildEventList(state) ,// This will now work without needing to be in an Expanded widget
+            const Text("Register", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            _buildEventList(state) // registerEvent
           ],
         ),
       ),
@@ -178,9 +183,9 @@ class _MyEventPageState extends State<MyEventPage> {
       return ListView.builder(
         shrinkWrap: true, // Important to allow ListView to size itself according to its children
         // physics: NeverScrollableScrollPhysics(), // Disable scrolling within the ListView
-        itemCount: state.events?.length ?? 0,
+        itemCount: state.createEvents?.length ?? 0,
         itemBuilder: (context, index) {
-          final event = state.events?[index];
+          final event = state.createEvents?[index];
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
             child: EventHorizCard(event: event),

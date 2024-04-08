@@ -15,6 +15,11 @@ class LoadTag extends UserEventsEvent {
   const LoadTag(this.token);
 }
 
+class LoadUserRegisterEvent extends UserEventsEvent {
+  final int? userId;
+  const LoadUserRegisterEvent(this.userId);
+}
+
 class FollowTagPressed extends UserEventsEvent {
   final FollowTagRequest request;
   const FollowTagPressed(this.request);

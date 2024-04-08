@@ -7,6 +7,7 @@ import 'package:ku_noti/core/constants/constants.dart';
 import 'package:ku_noti/features/data/event/models/event.dart';
 import 'package:ku_noti/features/data/event/models/follow_event_request.dart';
 import 'package:ku_noti/features/data/event/models/follow_tag_request.dart';
+import 'package:ku_noti/features/domain/event/usecases/register_event_usecase.dart';
 import 'package:retrofit/retrofit.dart';
 part 'event_api_service.g.dart';
 
@@ -67,5 +68,15 @@ abstract class EventApiService {
   @DELETE('/api/event/unfollow_tag')
   Future<HttpResponse<String>> unFollowTag(
       @Body() FollowTagRequest request
+  );
+  
+  @GET('/api/event/regis_events')
+  Future<HttpResponse<List<EventModel>>> getRegister(
+    @Field("user_id") int userId,
+  );
+
+  @POST('/api/event/regis_event')
+  Future<HttpResponse<List<EventModel>>> registerEvent(
+      @Body() RegisterEventRequest request
   );
 }
