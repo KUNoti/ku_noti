@@ -1,14 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:ku_noti/core/constants/colors.dart';
 import 'package:ku_noti/core/constants/constants.dart';
-import 'package:ku_noti/features/domain/event/entities/event.dart';
+import 'package:ku_noti/features/data/event/models/event.dart';
+import 'package:ku_noti/features/data/notification/local/norification_service.dart';
 
-class EventDetailPage extends StatelessWidget {
-  final EventEntity? event;
+
+class EventDetailPage extends StatefulWidget {
+  final EventModel? event;
   const EventDetailPage({
     super.key,
     this.event
   });
+
+  @override
+  State<EventDetailPage> createState() => _EventDetailPageState();
+}
+
+class _EventDetailPageState extends State<EventDetailPage> {
+  DateTime scheduleTime = DateTime.now();
+
+  void openDatePicker() {
+    DatePicker.showDateTimePicker(
+      context,
+      showTitleActions: true,
+      onChanged: (date) => scheduleTime = date,
+      onConfirm: (date) {
+        setScheduleNoti();
+      },
+    );
+  }
+
+  void setScheduleNoti() {
+    NotificationService().scheduleNotification(
+        title: widget.event?.title,
+        body:  widget.event?.detail,
+        event: widget.event,
+        scheduledNotificationDateTime: scheduleTime);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +51,7 @@ class EventDetailPage extends StatelessWidget {
                 children: [
                   // Event image
                   Image.network(
-                    event?.image ?? kDefaultImage,
+                    widget.event?.image ?? kDefaultImage,
                     width: double.infinity,
                     height: 500,
                     fit: BoxFit.cover,
@@ -65,7 +94,7 @@ class EventDetailPage extends StatelessWidget {
                   children: [
                     // Event title
                     Text(
-                      event?.title ?? 'Event title',
+                      widget.event?.title ?? 'Event title',
                       style: const TextStyle(
                         fontSize: 24.0,
                         fontWeight: FontWeight.bold,
@@ -127,7 +156,7 @@ class EventDetailPage extends StatelessWidget {
 
               TextButton(
                 onPressed: () {
-                  // TODO: Implement the navigation to maps
+                  openDatePicker();
                 },
                 style: TextButton.styleFrom(
                   foregroundColor: Colors.white,
@@ -201,27 +230,4 @@ class EventDetailPage extends StatelessWidget {
       ],
     );
   }
-
-  // Widget _buildBottomButton(BuildContext context) {
-  //   return Padding(
-  //     padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-  //     child: Row(
-  //       children: [
-  //         CustomButton(
-  //           buttonText: 'Register',
-  //           onPressed: () {},
-  //           backColor: Colors.deepPurpleAccent[50],
-  //           foreColor: MyColors().primary,
-  //         ),
-  //         const Spacer(),
-  //         CustomButton(
-  //             buttonText: 'Navigate',
-  //             onPressed: () {},
-  //           backColor: Colors.deepPurpleAccent,
-  //           foreColor: Colors.white,
-  //         )
-  //       ],
-  //     ),
-  //   );
-  // }
 }
