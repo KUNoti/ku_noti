@@ -5,13 +5,15 @@ import 'package:ku_noti/core/constants/colors.dart';
 typedef ChipSelectedCallback = void Function(String selectedLabel, bool isSelected, int index);
 
 class SelectTagFollow extends StatelessWidget {
-  final List<String> chipLabels = ['KU', 'Music', 'Art', 'Workshop'];
-  final List<IconData> chipIcons = [Icons.school, Icons.music_note, Icons.brush, Icons.build];
+  final List<String> chipLabels;
+  final List<IconData> chipIcons;
   final ChipSelectedCallback onChipSelected;
   final Set<int> selectedChipIndices;
 
-  SelectTagFollow({
+  const SelectTagFollow({
     super.key,
+    required this.chipLabels,
+    required this.chipIcons,
     required this.selectedChipIndices,
     required this.onChipSelected,
   });

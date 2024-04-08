@@ -2,6 +2,7 @@
 import 'package:ku_noti/core/constants/constants.dart';
 import 'package:ku_noti/features/domain/event/entities/event.dart';
 
+
 class EventModel extends EventEntity {
   const EventModel({
     super.id,
@@ -18,23 +19,27 @@ class EventModel extends EventEntity {
     super.tag,
     super.locationName,
     super.needRegis,
+    super.regisAmount,
+    super.regisMax
   });
 
   factory EventModel.fromJson(Map<String, dynamic> map){
     return EventModel(
-        id: map['id'] ?? "",
-        title: map['title'] ?? "",
-        latitude: map['latitude'] ?? 13.5,
-        longitude: map['longitude'] ?? 120.0,
-        startDateTime: map['start_date'] != null ? DateTime.parse(map['start_date']) : null,
-        endDateTime:  map['end_date'] != null ? DateTime.parse(map['end_date']) : null,
-        price: map['price'] ?? 0.0,
-        image: map['image'] != null && map['image'] != "" ? map['image'] : kDefaultImage,
-        creator: map['creator'] ?? 0,
-        detail: map['detail'] ?? "",
-        locationName: map['location_name'] ?? "",
-        needRegis: map['need_regis'] ?? false,
-        tag: map['tag'] ?? ""
+      id: parseInt(map['id']),
+      title: map['title'],
+      latitude: map['latitude'] is num ? map['latitude'] : double.tryParse(map['latitude']),
+      longitude: map['longitude'] is num ? map['longitude'] : double.tryParse(map['longitude']),
+      startDateTime: map['start_date'] != null ? DateTime.parse(map['start_date']) : null,
+      endDateTime:  map['end_date'] != null ? DateTime.parse(map['end_date']) : null,
+      price: map['price'] is num ? map['price'] : double.tryParse(map['price']),
+      image: map['image'],
+      creator: parseInt(map['creator']),
+      detail: map['detail'],
+      locationName: map['location_name'],
+      needRegis: map['need_regis'],
+      regisAmount: parseInt(map['regis_amount']),
+      regisMax: parseInt(map['regis_max']),
+      // Assume imageFile and other fields are handled similarly
     );
   }
 
@@ -51,7 +56,10 @@ class EventModel extends EventEntity {
       "location_name": locationName,
       "need_regis": needRegis,
       "image_file": imageFile,
-      "tag": tag
+      "image": image,
+      "tag": tag,
+      "regis_amount": regisAmount,
+      "regis_max": regisMax,
     };
   }
 
@@ -70,7 +78,15 @@ class EventModel extends EventEntity {
         locationName: entity.locationName,
         needRegis: entity.needRegis,
         imageFile: entity.imageFile,
-        tag: entity.tag
+        tag: entity.tag,
+        regisAmount: entity.regisAmount,
+        regisMax: entity.regisMax
     );
   }
+}
+int? parseInt(dynamic value) {
+  if (value == null) {
+    return null;
+  }
+  return int.tryParse(value.toString());
 }

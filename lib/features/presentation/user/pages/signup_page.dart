@@ -3,13 +3,14 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:ku_noti/features/data/notification/service/firebase_service.dart';
 import 'package:ku_noti/features/data/user/models/user.dart';
 import 'package:ku_noti/features/presentation/user/bloc/auth_bloc.dart';
 import 'package:ku_noti/features/presentation/user/bloc/auth_event.dart';
 import 'package:ku_noti/features/presentation/user/bloc/auth_state.dart';
 import 'package:ku_noti/features/presentation/user/widgets/custom_button.dart';
 import 'package:ku_noti/features/presentation/user/widgets/custom_textfield.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:ku_noti/injection_container.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -30,16 +31,32 @@ class _SignUpPageState extends State<SignUpPage> {
 
   final _formKey = GlobalKey<FormState>();
 
-  void register(BuildContext context) async {
+  void register() async {
+    if (!mounted) return;
+
+    String? token = await sl<FirebaseService>().getFirebaseToken();
+    if (!mounted) {
+      return;  // Check if the widget is still in the widget tree
+    }
+
+    if (token == null) {
+      return;
+    }
+
     BlocProvider.of<AuthBloc>(context).add(RegisterEvent(
         UserModel(
             username: usernameController.text,
             password: passwordController.text,
             name: nameController.text,
             email: emailController.text,
-            imageFile: _image
+            imageFile: _image,
+            token: token
         )
     ));
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Processing Signup')),
+    );
   }
 
   @override
@@ -232,7 +249,7 @@ class _SignUpPageState extends State<SignUpPage> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Processing Signup')),
           );
-          register(context);
+          register();
         }
       },
       backColor: Colors.deepPurpleAccent,

@@ -6,10 +6,12 @@ import 'package:dio/dio.dart';
 import 'package:ku_noti/core/constants/constants.dart';
 import 'package:ku_noti/features/data/event/models/event.dart';
 import 'package:ku_noti/features/data/event/models/follow_event_request.dart';
+import 'package:ku_noti/features/data/event/models/follow_tag_request.dart';
+import 'package:ku_noti/features/domain/event/usecases/register_event_usecase.dart';
 import 'package:retrofit/retrofit.dart';
 part 'event_api_service.g.dart';
 
-@RestApi(baseUrl: APIBaseIOSURL)
+@RestApi(baseUrl: localURL)
 abstract class EventApiService {
   factory EventApiService(Dio dio) = _EventApiService;
 
@@ -51,5 +53,30 @@ abstract class EventApiService {
   @GET('/api/event/created_by_me')
   Future<HttpResponse<List<EventModel>>> getCreateByMe(
     @Field("user_id") int userId
+  );
+
+  @GET('/api/event/tag')
+  Future<HttpResponse<List<String>>> getTags(
+    @Field("token") String token
+  );
+
+  @POST('/api/event/follow_tag')
+  Future<HttpResponse<String>> followTag(
+      @Body() FollowTagRequest request
+  );
+
+  @DELETE('/api/event/unfollow_tag')
+  Future<HttpResponse<String>> unFollowTag(
+      @Body() FollowTagRequest request
+  );
+  
+  @GET('/api/event/regis_events')
+  Future<HttpResponse<List<EventModel>>> getRegister(
+    @Field("user_id") int userId,
+  );
+
+  @POST('/api/event/regis_event')
+  Future<HttpResponse<List<EventModel>>> registerEvent(
+      @Body() RegisterEventRequest request
   );
 }

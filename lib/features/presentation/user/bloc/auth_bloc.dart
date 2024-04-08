@@ -13,7 +13,6 @@ import 'auth_state.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final LoginUserUseCase _loginUserUseCase;
   final RegisterUserUseCase _registerUserUseCase;
-  // final FirebaseApi _firebaseApi;
 
   AuthBloc(this._loginUserUseCase, this._registerUserUseCase) : super(const AuthInit()) {
     on <LoginEvents> (_onLoginEvents);
@@ -26,7 +25,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       final dataState = await _loginUserUseCase(params: event.toLoginRequest());
       if (dataState is DataSuccess) {
-        print(dataState.data!.toString());
         emit(
             AuthDone(dataState.data!)
         );
@@ -43,9 +41,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   void _onRegisterEvents(RegisterEvent event, Emitter<AuthState> emit) async {
-    // emit(const AuthLoading());
+    emit(const AuthLoading());
     try {
-      // event.userModel.token = _firebaseApi.token;
       final dataState = await _registerUserUseCase(params: event.userModel);
 
       if (dataState is DataSuccess) {

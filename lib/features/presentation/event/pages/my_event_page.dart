@@ -2,11 +2,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ku_noti/core/constants/colors.dart';
+import 'package:ku_noti/features/data/event/models/follow_tag_request.dart';
+import 'package:ku_noti/features/data/notification/service/firebase_service.dart';
 import 'package:ku_noti/features/presentation/event/bloc/user_event/user_event_bloc.dart';
+import 'package:ku_noti/features/presentation/event/bloc/user_event/user_event_event.dart';
 import 'package:ku_noti/features/presentation/event/bloc/user_event/user_event_state.dart';
 import 'package:ku_noti/features/presentation/event/widgets/create_event_dialog.dart';
 import 'package:ku_noti/features/presentation/event/widgets/event_horizontal_card.dart';
 import 'package:ku_noti/features/presentation/event/widgets/select_tag_follow.dart';
+import 'package:ku_noti/features/presentation/user/bloc/auth_bloc.dart';
+import 'package:ku_noti/injection_container.dart';
 
 class MyEventPage extends StatefulWidget {
   const MyEventPage({super.key});
@@ -16,17 +21,56 @@ class MyEventPage extends StatefulWidget {
 }
 
 class _MyEventPageState extends State<MyEventPage> {
+  final List<String> chipLabels = ['KU', 'Music', 'Art', 'Workshop', 'Food'];
+  final List<IconData> chipIcons = [Icons.school, Icons.music_note, Icons.brush, Icons.build, Icons.food_bank];
   Set<int> selectedTagIndices = {};
+  String? token;
+  @override
+  initState()  {
+    super.initState();
+    fetchInitialData();
+    final user = context.read<AuthBloc>().state.user;
+    BlocProvider.of<UserEventBloc>(context).add(LoadTag(token));
+    BlocProvider.of<UserEventBloc>(context).add(LoadUserEventsEvent(user?.userId));
+  }
+
+
+  Future<void> fetchInitialData() async {
+    // Fetch the Firebase token
+    token = await sl<FirebaseService>().getFirebaseToken();
+    print('Firebase Token: $token');
+
+    if (mounted) {
+      setState(() {
+        // Update the state of your Widget
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
           appBar: _buildAppBar(context),
-          body: BlocBuilder<UserEventBloc, UserEventsState>(
-            builder: (context, state) {
-              return _buildBody(context, state);
+          body: BlocListener<UserEventBloc, UserEventsState>(
+            listener: (context, state) {
+              if (state is LoadTagSuccess) {
+                setState(() {
+                  selectedTagIndices = Set.from(state.tags.map((tag) => chipLabels.indexOf(tag)).where((index) => index != -1));
+                });
+                // add load
+              }
+              else if (state is FollowTagSuccess) {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message)));
+              } else if (state is UserEventsError) {
+                // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
+              }
             },
+            child: BlocBuilder<UserEventBloc, UserEventsState>(
+              builder: (context, state) {
+                return _buildBody(context, state);
+              },
+            ),
           ),
         )
     );
@@ -82,12 +126,36 @@ class _MyEventPageState extends State<MyEventPage> {
             const SizedBox(height: 20), // Add some space
             const Text("Create by me", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             const SizedBox(height: 10), // Add some space
-            _buildEventList(state) // This will now work without needing to be in an Expanded widget
+            _buildEventList(state) ,// This will now work without needing to be in an Expanded widget
+            const Text("Register", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            _buildEventList(state) // registerEvent
           ],
         ),
       ),
     );
   }
+
+  void _handleTagSelection(String tag, bool isSelected, int index) async {
+
+    // print('Debug token $token');
+    if (token == null) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Failed to fetch Firebase token")));
+      return;
+    }
+
+    final userEventBloc = BlocProvider.of<UserEventBloc>(context);
+    // print(isSelected);
+    if (isSelected) {
+      userEventBloc.add(FollowTagPressed(FollowTagRequest(tag: tag, token: token)));
+      selectedTagIndices.add(index);
+    } else {
+      userEventBloc.add(UnFollowTagPressed(FollowTagRequest(tag: tag, token: token)));
+      print("object");
+      selectedTagIndices.remove(index);
+    }
+    setState(() {});  // Trigger UI update
+  }
+
 
   Widget _buildFollowTagSection(BuildContext context) {
     return Column(
@@ -95,16 +163,12 @@ class _MyEventPageState extends State<MyEventPage> {
       children: [
         const Text("Follow Tag", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
         SelectTagFollow(
+          chipLabels: chipLabels,
+          chipIcons: chipIcons,
           selectedChipIndices: selectedTagIndices,
-          onChipSelected: (String label, bool isSelected, int index) {
+          onChipSelected: (String tag, bool isSelected, int index) {
             setState(() {
-              if (isSelected) {
-                selectedTagIndices.add(index);
-                // print("Selected: $label");
-              } else {
-                selectedTagIndices.remove(index);
-                // print("Deselected: $label");
-              }
+              _handleTagSelection(tag, isSelected, index);
             });
           },
         ),
@@ -119,11 +183,11 @@ class _MyEventPageState extends State<MyEventPage> {
       return ListView.builder(
         shrinkWrap: true, // Important to allow ListView to size itself according to its children
         // physics: NeverScrollableScrollPhysics(), // Disable scrolling within the ListView
-        itemCount: state.events?.length ?? 0,
+        itemCount: state.createEvents?.length ?? 0,
         itemBuilder: (context, index) {
-          final event = state.events?[index];
+          final event = state.createEvents?[index];
           return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8), // Vertical padding for better spacing
+            padding: const EdgeInsets.symmetric(vertical: 8),
             child: EventHorizCard(event: event),
           );
         },

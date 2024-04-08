@@ -9,6 +9,7 @@ import 'package:ku_noti/features/presentation/event/bloc/event/event_event.dart'
 import 'package:ku_noti/features/presentation/event/bloc/event/event_state.dart';
 import 'package:ku_noti/features/presentation/event/bloc/follow_event/follow_event_bloc.dart';
 import 'package:ku_noti/features/presentation/event/bloc/follow_event/follow_event_state.dart';
+import 'package:ku_noti/features/presentation/event/pages/notification_page.dart';
 import 'package:ku_noti/features/presentation/event/pages/search_page.dart';
 import 'package:ku_noti/features/presentation/event/widgets/event_big_card.dart';
 import 'package:ku_noti/features/presentation/event/widgets/event_popular_card.dart';
@@ -31,9 +32,17 @@ class _HomePageState extends State<HomePage> {
   int selectedChipIndex = 0;
 
   void navigationToSearchPage(BuildContext context) {
-    Navigator.of(context).push(
+    Navigator.of(context, rootNavigator: true).push(
       MaterialPageRoute(
         builder: (context) => const SearchPage(),
+      ),
+    );
+  }
+
+  void navigationToNotificationPage(BuildContext context) {
+    Navigator.of(context, rootNavigator: true).push(
+      MaterialPageRoute(
+        builder: (context) => const NotificationPage(),
       ),
     );
   }
@@ -111,7 +120,7 @@ class _HomePageState extends State<HomePage> {
               IconButton(
                 icon: const Icon(Icons.notifications, color: Colors.black),
                 onPressed: () {
-                  // Action for the button press
+                  navigationToNotificationPage(context);
                 },
               ),
               const SizedBox(width: 16),

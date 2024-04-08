@@ -2,18 +2,30 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <true/>
+    </dict>
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+      <string>sms</string>
+      <string>tel</string>
+    </array>
     <key>NSPhotoLibraryUsageDescription</key>
-    <string></string>
-    <key>NSLocationWhenInUseUsageDescription</key>
-    <string></string>
-    <key>NSLocationUsageDescription</key>
-    <string></string>
-    <key>NSLocationAlwaysUsageDescription</key>
-    <string></string>
-    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-    <string></string>
+    <string>This app requires access to your photo library to select and save photos.</string>
     <key>NSCameraUsageDescription</key>
-    <string></string>
+    <string>This app needs access to the camera for AR features and capturing photos.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>We use your location data to provide location-based content and improve your AR experience when the app is in use.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>Our app may use your location even when not open to send location-based alerts or information.</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>Our app uses your location to provide relevant content both when the app is open and in the background.</string>
+    <key>NSLocationUsageDescription</key>
+    <string>This app needs access to your location to provide location-based services.</string>
+    <key>NSCameraUsageDescription</key>
+    <string>This app requires access to the camera for AR features.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>

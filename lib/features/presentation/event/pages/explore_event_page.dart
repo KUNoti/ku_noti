@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:ku_noti/features/presentation/event/widgets/ar_section.dart';
+import 'package:ku_noti/features/presentation/event/widgets/ar/ar_section.dart';
 import 'package:ku_noti/features/presentation/event/widgets/map_section.dart';
 
 
@@ -14,19 +14,17 @@ class ExplorePage extends StatelessWidget {
           body: Column(
             children: [
               Expanded(
-                flex: 2,
+                flex: 3,
                 child: ARSection()
               ),
 
               Expanded(
-                flex: 1,
-                child: MapSection(events: [])
+                flex: 2,
+                child: MapSection()
               )
             ],
           ),
         )
     );
   }
-
-
 }

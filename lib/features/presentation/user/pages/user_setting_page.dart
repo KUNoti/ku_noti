@@ -12,9 +12,8 @@ class UserSettingsPage extends StatelessWidget {
   void _logOut(BuildContext context) {
 
     context.read<AuthBloc>().add(const LogOutEvent());
-    Navigator.of(context).pushAndRemoveUntil(
+    Navigator.of(context, rootNavigator: true).push(
       MaterialPageRoute(builder: (context) => LoginPage()),
-          (Route<dynamic> route) => false,
     );
   }
 
